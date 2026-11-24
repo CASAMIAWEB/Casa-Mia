@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casa Mia | Detalle de Propiedad</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.48)), url("imagenes/fondo-casa.jpeg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #ffffff;
+      padding-bottom: 90px;
+    }
+
+    /* Barra superior */
+    .barra-superior {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: rgba(20, 20, 20, 0.88);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 30px;
+      border-bottom: 2px solid #1b7a3d;
+      z-index: 30;
+    }
+
+    .marca {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffffff;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .menu-apartados {
+      display: flex;
+      gap: 18px;
+    }
+
+    .menu-apartados a {
+      color: #f0f0f0;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .menu-apartados a:hover,
+    .menu-apartados a.activo {
+      background-color: #1b7a3d;
+      color: #ffffff;
+    }
+
+    /* Perfil */
+    .perfil-contenedor {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .icono-perfil {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      background-color: #ffffff;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .perfil-contenedor:hover .icono-perfil {
+      border-color: #6ee79a;
+      transform: scale(1.05);
+    }
+
+    .perfil-contenedor::after {
+      content: "";
+      position: absolute;
+      top: 42px;
+      right: 0;
+      width: 100%;
+      height: 14px;
+    }
+
+    .tarjeta-perfil {
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 245px;
+      background-color: rgba(255, 255, 255, 0.97);
+      color: #222222;
+      padding: 14px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      text-align: left;
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+      pointer-events: none;
+    }
+
+    .perfil-contenedor:hover .tarjeta-perfil {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .perfil-contenedor.menu-abierto .tarjeta-perfil {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .tarjeta-perfil p {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .tarjeta-perfil .etiqueta {
+      font-weight: bold;
+      color: #1b7a3d;
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .menu-opciones-perfil {
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 210px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+
+    .perfil-contenedor.menu-abierto .menu-opciones-perfil {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .menu-opciones-perfil a {
+      display: block;
+      padding: 12px 16px;
+      color: #222222;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .menu-opciones-perfil a:hover {
+      background-color: #f2f5f3;
+    }
+
+    .menu-opciones-perfil a.opcion-cerrar {
+      color: #d93025;
+      border-bottom: none;
+    }
+
+    /* Contenedor principal */
+    .contenedor-detalle {
+      max-width: 1160px;
+      margin: 28px auto;
+      padding: 0 20px;
+    }
+
+    .btn-volver-catalogo {
+      display: inline-block;
+      margin-bottom: 16px;
+      background-color: rgba(255, 255, 255, 0.92);
+      color: #111111;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    .btn-volver-catalogo:hover {
+      background-color: #ffffff;
+    }
+
+    .tarjeta-propiedad {
+      background-color: rgba(255, 255, 255, 0.96);
+      color: #222222;
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Zona superior: Foto grande a la izquierda + Galería a la derecha */
+    .zona-visual {
+      display: grid;
+      grid-template-columns: 1.75fr 1fr;
+      gap: 22px;
+      margin-bottom: 26px;
+      align-items: start;
+    }
+
+    .foto-grande-marco {
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #e6eaee;
+      height: 430px;
+      border: 2px solid #dcdcdc;
+    }
+
+    .foto-grande-marco img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .galeria-lateral {
+      background-color: #f4f7f5;
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid #dce6df;
+    }
+
+    .galeria-lateral h3 {
+      font-size: 15px;
+      color: #1b7a3d;
+      margin-bottom: 4px;
+    }
+
+    .galeria-lateral p.ayuda-zoom {
+      font-size: 12px;
+      color: #555555;
+      margin-bottom: 14px;
+    }
+
+    .grid-fotos-extra {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      overflow: visible;
+    }
+
+    /* Miniatura que crece al pasar el mouse encima */
+    .miniatura-zoom {
+      position: relative;
+      height: 145px;
+      border-radius: 10px;
+      border: 3px solid transparent;
+      background-color: #ffffff;
+      cursor: pointer;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, border-color 0.2s;
+      z-index: 1;
+    }
+
+    .miniatura-zoom img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 7px;
+      display: block;
+    }
+
+    .miniatura-zoom.activa {
+      border-color: #1b7a3d;
+    }
+
+    .miniatura-zoom:hover {
+      transform: scale(1.65);
+      z-index: 50;
+      border-color: #1b7a3d;
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .pie-miniatura {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.72);
+      color: #ffffff;
+      font-size: 11px;
+      padding: 4px 6px;
+      text-align: center;
+      border-bottom-left-radius: 7px;
+      border-bottom-right-radius: 7px;
+      pointer-events: none;
+    }
+
+    /* Cabecera: Nombre, ubicación y precio */
+    .cabecera-casa {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e2e2e2;
+      margin-bottom: 22px;
+    }
+
+    .cabecera-casa h1 {
+      font-size: 30px;
+      color: #111111;
+      margin-bottom: 6px;
+    }
+
+    .ubicacion-casa {
+      font-size: 15px;
+      color: #444444;
+      font-weight: bold;
+    }
+
+    .caja-precio {
+      text-align: right;
+    }
+
+    .caja-precio .precio-valor {
+      font-size: 30px;
+      font-weight: bold;
+      color: #1b7a3d;
+    }
+
+    .caja-precio .precio-sub {
+      font-size: 13px;
+      color: #666666;
+    }
+
+    /* Datos técnicos */
+    .grid-datos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .ficha-dato {
+      background-color: #f4f7f5;
+      border-left: 4px solid #1b7a3d;
+      padding: 14px 16px;
+      border-radius: 8px;
+    }
+
+    .ficha-dato span {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      color: #1b7a3d;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .ficha-dato strong {
+      font-size: 15px;
+      color: #222222;
+      line-height: 1.4;
+      display: block;
+    }
+
+    /* Info completa y Créditos aplicables */
+    .grid-info-creditos {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 22px;
+    }
+
+    .panel-detalle {
+      background-color: #fafafa;
+      border: 1px solid #e4e4e4;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .panel-detalle h2 {
+      font-size: 19px;
+      color: #1b7a3d;
+      margin-bottom: 12px;
+    }
+
+    .panel-detalle p {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #333333;
+      margin-bottom: 14px;
+    }
+
+    .lista-caracteristicas {
+      padding-left: 18px;
+      color: #333333;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .lista-creditos {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .lista-creditos li {
+      background-color: #eef6f0;
+      border: 1px solid #c4decb;
+      color: #145e2e;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 11px 14px;
+      border-radius: 8px;
+    }
+
+    /* Modal Cerrar Sesión */
+    .overlay-borroso {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .overlay-borroso.activo {
+      display: flex;
+    }
+
+    .modal-cerrar {
+      background-color: #ffffff;
+      color: #222222;
+      width: 90%;
+      max-width: 380px;
+      padding: 28px 24px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-cerrar h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .modal-cerrar p {
+      font-size: 14px;
+      color: #555555;
+      margin-bottom: 22px;
+    }
+
+    .botones-modal {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-modal-si {
+      flex: 1;
+      padding: 10px;
+      background-color: #d93025;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-modal-volver {
+      flex: 1;
+      padding: 10px;
+      background-color: #e4e6eb;
+      color: #222222;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    /* Footer */
+    .barra-contacto {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(4px);
+      color: #111111;
+      text-align: center;
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.9);
+      z-index: 25;
+    }
+
+    .barra-contacto p {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .barra-contacto span {
+      font-weight: normal;
+      margin: 0 10px;
+    }
+
+    .link-ayuda {
+      color: #1b7a3d;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-right: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .zona-visual,
+      .grid-info-creditos {
+        grid-template-columns: 1fr;
+      }
+
+      .foto-grande-marco {
+        height: 290px;
+      }
+
+      .caja-precio {
+        text-align: left;
+      }
+
+      .miniatura-zoom:hover {
+        transform: scale(1.25);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="barra-superior">
+    <a href="Principal.html" class="marca">Casa Mia</a>
+    <nav class="menu-apartados">
+      <a href="Catalogo.html" class="activo">Catálogo</a>
+      <a href="Pagos.html">Créditos y Pagos</a>
+      <a href="Preventa.html">Terrenos y Preventas</a>
+      <a href="Vendecasa.html">Vende tu Casa</a>
+    </nav>
+
+    <div class="perfil-contenedor" id="perfil-box" onclick="alternarMenuPerfil(event)">
+      <img src="imagenes/perfil.png" alt="Perfil" class="icono-perfil" />
+      <div class="tarjeta-perfil">
+        <p><span class="etiqueta">Usuario</span>Prueba</p>
+        <p style="margin-bottom:0;"><span class="etiqueta">Correo vinculado</span>ExampleCorreo@gmail.com</p>
+      </div>
+      <div class="menu-opciones-perfil" onclick="event.stopPropagation()">
+        <a href="Cuenta.html">Mi cuenta</a>
+        <a href="Config.html">Configuración</a>
+        <a href="Favoritos.html">Favoritos</a>
+        <a href="#" class="opcion-cerrar" onclick="abrirModalCerrar(event)">Cerrar sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor-detalle">
+    <a href="Catalogo.html" class="btn-volver-catalogo">← Volver al Catálogo</a>
+
+    <section class="tarjeta-propiedad">
+      <!-- Foto grande + Galería donde al pasar el mouse se agranda -->
+      <div class="zona-visual">
+        <div class="foto-grande-marco">
+          <img id="foto-grande" src="" alt="Foto grande de la casa" />
+        </div>
+
+        <aside class="galeria-lateral">
+          <h3>Galería de la propiedad</h3>
+          <p class="ayuda-zoom">Pasa el mouse para agrandar o haz clic para ponerla en grande.</p>
+          <div class="grid-fotos-extra" id="contenedor-galeria"></div>
+        </aside>
+      </div>
+
+      <!-- Precio y título -->
+      <div class="cabecera-casa">
+        <div>
+          <h1 id="casa-nombre">Cargando propiedad...</h1>
+          <p class="ubicacion-casa" id="casa-ubicacion"></p>
+        </div>
+        <div class="caja-precio">
+          <div class="precio-valor" id="casa-precio"></div>
+          <div class="precio-sub" id="casa-subprecio"></div>
+        </div>
+      </div>
+
+      <!-- Ficha técnica -->
+      <div class="grid-datos">
+        <div class="ficha-dato">
+          <span>Recámaras</span>
+          <strong id="casa-recamaras"></strong>
+        </div>
+        <div class="ficha-dato">
+          <span>Baños</span>
+          <strong id="casa-banos"></strong>
+        </div>
+        <div class="ficha-dato">
+          <span>Medidas</span>
+          <strong id="casa-medidas"></strong>
+        </div>
+        <div class="ficha-dato">
+          <span>Cochera</span>
+          <strong id="casa-cochera"></strong>
+        </div>
+      </div>
+
+      <!-- Información completa + Créditos a los que aplica -->
+      <div class="grid-info-creditos">
+        <div class="panel-detalle">
+          <h2>Información completa de la casa</h2>
+          <p id="casa-descripcion"></p>
+          <ul class="lista-caracteristicas" id="casa-extras"></ul>
+        </div>
+
+        <div class="panel-detalle">
+          <h2>Créditos y pagos a los que aplica</h2>
+          <ul class="lista-creditos" id="casa-creditos"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="overlay-borroso" id="modal-cerrar-sesion">
+    <div class="modal-cerrar">
+      <h3>¿Estás seguro que quieres cerrar sesión?</h3>
+      <p>Tendrás que volver a ingresar tu usuario y contraseña para entrar.</p>
+      <div class="botones-modal">
+        <button type="button" class="btn-modal-si" onclick="window.location.href='index.html'">Sí</button>
+        <button type="button" class="btn-modal-volver" onclick="cerrarModalCerrar()">Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="barra-contacto">
+    <p>
+      <a href="Ayudas.html" class="link-ayuda">Ayuda</a> |
+      Contacto: <span>Tel / WhatsApp: +52 868 000 0000</span> | <span>Correo: ventas@casamia.com</span> | <span>Horario: Lun - Sáb 9:00 AM - 6:00 PM</span>
+    </p>
+  </footer>
+
+  <script>
+    const INVENTARIO_CASAS = {
+      "casa-arboledas1": {
+        nombre: "Casa en Venta en Arboledas",
+        ubicacion: "Arboledas · Citas al 868 797 3665",
+        precio: "$3,200,000 MXN",
+        subprecio: "¡Aplica todos los créditos! · Citas: 868 797 3665",
+        recamaras: "4 Recámaras en total (1 en planta baja · 3 en planta alta)",
+        banos: "3.5 Baños en total (1.5 planta baja · 2 planta alta)",
+        medidas: "Consultar medidas exactas al agendar cita",
+        cochera: "1 auto con portón eléctrico",
+        descripcion: "Amplia residencia de dos plantas en Arboledas, con recámara en planta baja, estancia en planta alta y excelente distribución familiar. Agenda tu cita al 868 797 3665.",
+        extras: [
+          "Planta baja: Sala, comedor, cocina y lavandería",
+          "Planta baja: 1 recámara y 1.5 baños",
+          "Planta baja: Cochera para 1 auto con portón eléctrico",
+          "Planta alta: 2 recámaras con clóset",
+          "Planta alta: 1 recámara principal con clóset vestidor y baño completo",
+          "Planta alta: Estancia y 1 baño compartido",
+          "Citas e informes: 868 797 3665"
+        ],
+        creditos: [
+          "Crédito Infonavit",
+          "Crédito Fovissste",
+          "Crédito Hipotecario Bancario",
+          "Cofinavit / Apoyo Infonavit",
+          "Compra de Contado"
+        ],
+        galeria: [
+          { src: "imagenes/presentacion.jpeg", texto: "Fachada" },
+          { src: "imagenes/fondo-casa.jpeg", texto: "Exterior" },
+          { src: "imagenes/presentacion.jpeg", texto: "Planta Baja" },
+          { src: "imagenes/fondo-casa.jpeg", texto: "Planta Alta" }
+        ]
+      },
+      
+      "valle-verde": {
+        nombre: "Fraccionamiento Valle Verde",
+        ubicacion: "Fracc. Valle Verde, Zona Sur",
+        precio: "$1,320,000 MXN",
+        subprecio: "Excelente opción para primer crédito",
+        recamaras: "2 Recámaras",
+        banos: "1.5 Baños",
+        medidas: "128 m² terreno · 92 m² construcción",
+        cochera: "1 auto",
+        descripcion: "Casa ubicada en zona tranquila con acceso controlado, ideal para parejas o familias pequeñas que buscan seguridad y cercanía a escuelas y tiendas.",
+        extras: [
+          "Piso cerámico en toda la vivienda",
+          "Medio baño en planta baja para visitas",
+          "Área verde y parque vecinal cercano",
+          "Documentación lista para trámite"
+        ],
+        creditos: [
+          "Crédito Infonavit",
+          "Crédito Fovissste",
+          "Compra de Contado"
+        ],
+        galeria: [
+          { src: "imagenes/fondo-casa.jpeg", texto: "Frente" },
+          { src: "imagenes/presentacion.jpeg", texto: "Lateral" },
+          { src: "imagenes/fondo-casa.jpeg", texto: "Acceso" },
+          { src: "imagenes/presentacion.jpeg", texto: "Vista" }
+        ]
+      },
+
+      "quinta-olivos": {
+        nombre: "Quinta Los Olivos",
+        ubicacion: "Col. Los Olivos, Zona Poniente",
+        precio: "$2,490,000 MXN",
+        subprecio: "Residencia amplia · Alta plusvalía",
+        recamaras: "4 Recámaras",
+        banos: "3 Baños",
+        medidas: "240 m² terreno · 210 m² construcción",
+        cochera: "3 autos",
+        descripcion: "Casa de gran amplitud con jardín, terraza y espacios generosos en todas sus áreas, pensada para familias grandes que buscan comodidad y privacidad.",
+        extras: [
+          "4 recámaras distribuidas en dos plantas",
+          "3 baños completos con acabados modernos",
+          "Jardín y zona de terraza para reuniones",
+          "Amplio frente con espacio para 3 vehículos"
+        ],
+        creditos: [
+          "Crédito Hipotecario Bancario",
+          "Compra de Contado"
+        ],
+        galeria: [
+          { src: "imagenes/presentacion.jpeg", texto: "Principal" },
+          { src: "imagenes/fondo-casa.jpeg", texto: "Jardín" },
+          { src: "imagenes/presentacion.jpeg", texto: "Fachada" },
+          { src: "imagenes/fondo-casa.jpeg", texto: "Detalle" }
+        ]
+      }
+    };
+
+    function renderizarCasa() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const casa = INVENTARIO_CASAS[id] || INVENTARIO_CASAS["casa-palmas"];
+
+      document.title = "Casa Mia | " + casa.nombre;
+      document.getElementById("casa-nombre").textContent = casa.nombre;
+      document.getElementById("casa-ubicacion").textContent = "Ubicación: " + casa.ubicacion;
+      document.getElementById("casa-precio").textContent = casa.precio;
+      document.getElementById("casa-subprecio").textContent = casa.subprecio;
+      document.getElementById("casa-recamaras").textContent = casa.recamaras;
+      document.getElementById("casa-banos").textContent = casa.banos;
+      document.getElementById("casa-medidas").textContent = casa.medidas;
+      document.getElementById("casa-cochera").textContent = casa.cochera;
+      document.getElementById("casa-descripcion").textContent = casa.descripcion;
+
+      const ulExtras = document.getElementById("casa-extras");
+      ulExtras.innerHTML = "";
+      casa.extras.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ulExtras.appendChild(li);
+      });
+
+      const ulCreditos = document.getElementById("casa-creditos");
+      ulCreditos.innerHTML = "";
+      casa.creditos.forEach((credito) => {
+        const li = document.createElement("li");
+        li.textContent = "✓ " + credito;
+        ulCreditos.appendChild(li);
+      });
+
+      const fotoGrande = document.getElementById("foto-grande");
+      const galeriaBox = document.getElementById("contenedor-galeria");
+      galeriaBox.innerHTML = "";
+
+      if (casa.galeria && casa.galeria.length > 0) {
+        fotoGrande.src = casa.galeria[0].src;
+        fotoGrande.alt = casa.galeria[0].texto;
+
+        casa.galeria.forEach((foto, index) => {
+          const thumb = document.createElement("div");
+          thumb.className = "miniatura-zoom" + (index === 0 ? " activa" : "");
+          thumb.innerHTML = `
+            <img src="${foto.src}" alt="${foto.texto}" />
+            <span class="pie-miniatura">${foto.texto}</span>
+          `;
+          thumb.addEventListener("click", () => {
+            fotoGrande.src = foto.src;
+            fotoGrande.alt = foto.texto;
+            document.querySelectorAll(".miniatura-zoom").forEach((el) => el.classList.remove("activa"));
+            thumb.classList.add("activa");
+          });
+          galeriaBox.appendChild(thumb);
+        });
+      }
+    }
+
+    renderizarCasa();
+
+    function alternarMenuPerfil(event) {
+      event.stopPropagation();
+      document.getElementById("perfil-box").classList.toggle("menu-abierto");
+    }
+
+    document.addEventListener("click", function () {
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+    });
+
+    function abrirModalCerrar(event) {
+      event.preventDefault();
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+      document.getElementById("modal-cerrar-sesion").classList.add("activo");
+    }
+
+    function cerrarModalCerrar() {
+      document.getElementById("modal-cerrar-sesion").classList.remove("activo");
+    }
+  </script>
+</body>
+</html>
