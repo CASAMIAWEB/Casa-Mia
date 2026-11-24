@@ -4,81 +4,193 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Casa Mia | Venta de Casas</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      /* Foto de fondo de la casa */
+      background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url("imagenes/fondo-casa.jpg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 1. Diagonal corta en la esquina superior izquierda que dice $$$ */
+    .cinta-diagonal {
+      position: fixed;
+      top: 18px;
+      left: -42px;
+      width: 160px;
+      background-color: #1b7a3d;
+      color: #ffffff;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      letter-spacing: 2px;
+      padding: 6px 0;
+      transform: rotate(-45deg);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+      z-index: 20;
+    }
+
+    /* 2. Panel de Iniciar sesión o Registrarse pegado a la izquierda a mitad de pantalla */
+    .panel-login {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 260px;
+      background-color: rgba(255, 255, 255, 0.92);
+      padding: 20px;
+      border-radius: 0 12px 12px 0;
+      box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.3);
+      z-index: 15;
+    }
+
+    .panel-login h3 {
+      margin-bottom: 12px;
+      color: #222;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .panel-login label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .panel-login input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .panel-login button {
+      width: 100%;
+      padding: 9px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .btn-entrar {
+      background-color: #1b7a3d;
+      color: white;
+    }
+
+    .btn-registro {
+      background-color: #e0e0e0;
+      color: #222;
+    }
+
+    /* 3. Imagen de presentación centrada */
+    .contenedor-central {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 100px 280px;
+      text-align: center;
+      color: white;
+    }
+
+    .img-presentacion {
+      max-width: 480px;
+      width: 100%;
+      border-radius: 14px;
+      border: 4px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+      margin-bottom: 16px;
+    }
+
+    .titulo-principal {
+      font-size: 36px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
+    .subtitulo {
+      font-size: 18px;
+      margin-top: 6px;
+      text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    }
+
+    /* 4. Rectángulo blanco transparente al ras abajo para contacto */
+    .barra-contacto {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(4px);
+      color: #111;
+      text-align: center;
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.9);
+      z-index: 15;
+    }
+
+    .barra-contacto p {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .barra-contacto span {
+      font-weight: normal;
+      margin: 0 10px;
+    }
+  </style>
 </head>
 <body>
 
-  <header>
-    <h1>Casa Mia</h1>
-    <p>Catálogo de casas en venta — Atención directa y sin complicaciones</p>
-    <nav>
-      <a href="#catalogo">Catálogo</a> |
-      <a href="#contacto">Contacto</a>
-    </nav>
-  </header>
+  <!-- Diagonal esquina superior izquierda -->
+  <div class="cinta-diagonal">$$$</div>
 
-  <hr />
+  <!-- Cuadro de acceso pegado a la izquierda -->
+  <aside class="panel-login">
+    <h3>Acceso</h3>
+    <form action="#" method="post">
+      <label for="usuario">Usuario</label>
+      <input type="text" id="usuario" name="usuario" placeholder="Escribe tu usuario" />
 
-  <main id="catalogo">
-    <h2>Casas disponibles</h2>
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password" placeholder="••••••••" />
 
-    <table border="1" cellpadding="12" cellspacing="0" width="100%">
-      <thead>
-        <tr>
-          <th>Vista</th>
-          <th>Propiedad</th>
-          <th>Características</th>
-          <th>Precio</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <img src="imagenes/casa-1.jpg" alt="Casa Residencial del Sol" width="180" />
-          </td>
-          <td>
-            <strong>Casa Residencial del Sol</strong><br />
-            Colonia Centro
-          </td>
-          <td>
-            3 recámaras · 2 baños<br />
-            160 m² de construcción · Cochera para 2 autos
-          </td>
-          <td><strong>$2,450,000 MXN</strong></td>
-          <td>
-            <a href="#contacto">Pedir informes</a>
-          </td>
-        </tr>
+      <button type="button" class="btn-entrar">Iniciar sesión</button>
+      <button type="button" class="btn-registro">Registrarse</button>
+    </form>
+  </aside>
 
-        <tr>
-          <td>
-            <img src="imagenes/casa-2.jpg" alt="Casa Quinta Los Pinos" width="180" />
-          </td>
-          <td>
-            <strong>Casa Quinta Los Pinos</strong><br />
-            Fraccionamiento Los Pinos
-          </td>
-          <td>
-            2 recámaras · 1.5 baños<br />
-            115 m² de construcción · Patio amplio
-          </td>
-          <td><strong>$1,680,000 MXN</strong></td>
-          <td>
-            <a href="#contacto">Pedir informes</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Imagen de presentación -->
+  <main class="contenedor-central">
+    <img src="imagenes/presentacion.jpg" alt="Casa en venta destacada" class="img-presentacion" />
+    <h1 class="titulo-principal">Casa Mia</h1>
+    <p class="subtitulo">Encuentra el hogar ideal para tu familia</p>
   </main>
 
-  <hr />
-
-  <footer id="contacto">
-    <h2>Contacto</h2>
-    <p>¿Te interesó alguna propiedad? Escríbenos para agendar una visita.</p>
+  <!-- Rectángulo blanco transparente al ras abajo -->
+  <footer class="barra-contacto">
     <p>
-      Correo: <a href="mailto:contacto@casamia.ejemplo">contacto@casamia.ejemplo</a><br />
-      Teléfono / WhatsApp: +52 000 000 0000
+      Contacto:
+      <span>Tel / WhatsApp: +52 868 000 0000</span> |
+      <span>Correo: ventas@casamia.com</span> |
+      <span>Horario: Lun - Sáb 9:00 AM - 6:00 PM</span>
     </p>
   </footer>
 
