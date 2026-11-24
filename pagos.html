@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casa Mia | Créditos y Pagos</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+    body {
+      min-height: 100vh;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url("imagenes/fondo-casa.jpeg");
+      background-size: cover; background-position: center; background-attachment: fixed;
+      color: #ffffff; padding-bottom: 85px;
+    }
+    .barra-superior {
+      position: sticky; top: 0; width: 100%; background-color: rgba(20, 20, 20, 0.88);
+      backdrop-filter: blur(6px); display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 30px; border-bottom: 2px solid #1b7a3d; z-index: 30;
+    }
+    .marca { font-size: 22px; font-weight: bold; color: #ffffff; text-decoration: none; letter-spacing: 1px; }
+    .menu-apartados { display: flex; gap: 18px; }
+    .menu-apartados a {
+      color: #f0f0f0; text-decoration: none; font-weight: bold; font-size: 15px;
+      padding: 8px 14px; border-radius: 6px; transition: background-color 0.2s;
+    }
+    .menu-apartados a:hover, .menu-apartados a.activo { background-color: #1b7a3d; color: #ffffff; }
+
+    /* Perfil */
+    .perfil-contenedor { position: relative; display: inline-block; cursor: pointer; }
+    .icono-perfil { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #ffffff; background-color: #1b7a3d; object-fit: cover; display: block; }
+    .perfil-contenedor::after { content: ""; position: absolute; top: 42px; right: 0; width: 100%; height: 14px; }
+    .tarjeta-perfil {
+      position: absolute; right: 0; top: 52px; width: 245px; background-color: rgba(255, 255, 255, 0.97);
+      color: #222; padding: 14px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      opacity: 0; visibility: hidden; transform: translateY(12px); transition: 0.3s ease; pointer-events: none; z-index: 40;
+    }
+    .perfil-contenedor:hover .tarjeta-perfil { opacity: 1; visibility: visible; transform: translateY(0); }
+    .perfil-contenedor.menu-abierto .tarjeta-perfil { opacity: 0; visibility: hidden; }
+    .tarjeta-perfil p { font-size: 13px; margin-bottom: 6px; }
+    .tarjeta-perfil .etiqueta { font-weight: bold; color: #1b7a3d; display: block; font-size: 11px; text-transform: uppercase; }
+    .menu-opciones-perfil {
+      position: absolute; right: 0; top: 52px; width: 210px; background-color: #fff; border-radius: 10px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4); overflow: hidden; z-index: 45; display: flex; flex-direction: column;
+      opacity: 0; visibility: hidden; transform: translateY(-8px); transition: 0.25s ease;
+    }
+    .perfil-contenedor.menu-abierto .menu-opciones-perfil { opacity: 1; visibility: visible; transform: translateY(0); }
+    .menu-opciones-perfil a { display: block; padding: 12px 16px; color: #222; text-decoration: none; font-size: 14px; font-weight: bold; border-bottom: 1px solid #eee; }
+    .menu-opciones-perfil a:hover { background-color: #f2f5f3; }
+    .menu-opciones-perfil a.opcion-cerrar { color: #d93025; border-bottom: none; }
+
+    /* Contenido Pagos */
+    .contenedor { max-width: 960px; margin: 35px auto; padding: 0 20px; }
+    .caja { background-color: rgba(255, 255, 255, 0.94); color: #222; padding: 30px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .caja h1 { color: #1b7a3d; font-size: 28px; margin-bottom: 10px; }
+    .grid-pagos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 20px; }
+    .opcion-pago { background: #f4f7f5; border-top: 4px solid #1b7a3d; padding: 18px; border-radius: 8px; }
+    .opcion-pago h3 { color: #1b7a3d; margin-bottom: 8px; }
+    .opcion-pago p { font-size: 14px; line-height: 1.5; color: #333; }
+
+    /* Footer */
+    .barra-contacto {
+      position: fixed; bottom: 0; left: 0; width: 100%; background-color: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(4px); color: #111; text-align: center; padding: 14px 20px; border-top: 1px solid rgba(255, 255, 255, 0.9); z-index: 25;
+    }
+    .barra-contacto p { font-size: 15px; font-weight: bold; }
+    .barra-contacto span { font-weight: normal; margin: 0 10px; }
+    .link-ayuda { color: #1b7a3d; font-weight: bold; text-decoration: underline; margin-right: 12px; }
+
+    /* Ventana flotante de Cerrar Sesión con fondo borroso */
+    .overlay-borroso {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .overlay-borroso.activo {
+      display: flex;
+    }
+
+    .modal-cerrar {
+      background-color: #ffffff;
+      color: #222222;
+      width: 90%;
+      max-width: 380px;
+      padding: 28px 24px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      animation: aparecerModal 0.25s ease-out;
+    }
+
+    @keyframes aparecerModal {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-cerrar h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #111111;
+    }
+
+    .modal-cerrar p {
+      font-size: 14px;
+      color: #555555;
+      margin-bottom: 22px;
+    }
+
+    .botones-modal {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn-modal-si {
+      flex: 1;
+      padding: 10px;
+      background-color: #d93025;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-modal-volver {
+      flex: 1;
+      padding: 10px;
+      background-color: #e4e6eb;
+      color: #222222;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header class="barra-superior">
+    <a href="Principal.html" class="marca">Casa Mia</a>
+    <nav class="menu-apartados">
+      <a href="Catalogo.html">Catálogo</a>
+      <a href="Pagos.html" class="activo">Créditos y Pagos</a>
+      <a href="Preventa.html">Terrenos y Preventas</a>
+      <a href="Vendecasa.html">Vende tu Casa</a>
+    </nav>
+    <div class="perfil-contenedor" id="perfil-box" onclick="alternarMenuPerfil(event)">
+      <img src="imagenes/perfil.png" alt="Perfil" class="icono-perfil" />
+      <div class="tarjeta-perfil">
+        <p><span class="etiqueta">Usuario</span>Prueba</p>
+        <p style="margin-bottom:0;"><span class="etiqueta">Correo vinculado</span>ExampleCorreo@gmail.com</p>
+      </div>
+      <div class="menu-opciones-perfil" onclick="event.stopPropagation()">
+        <a href="Cuenta.html">Mi cuenta</a>
+        <a href="Config.html">Configuración</a>
+        <a href="Favoritos.html">Favoritos</a>
+        <a href="#" class="opcion-cerrar" onclick="abrirModalCerrar(event)">Cerrar sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="caja">
+      <h1>Créditos y Esquemas de Pago</h1>
+      <p>En <strong>Casa Mia</strong> te asesoramos sin costo para tramitar tu crédito o planear tu compra de contado.</p>
+
+      <div class="grid-pagos">
+        <div class="opcion-pago">
+          <h3>Crédito Infonavit / Fovissste</h3>
+          <p>Te ayudamos a revisar tus puntos, precalificación y juntar créditos con tu pareja o familiar.</p>
+        </div>
+        <div class="opcion-pago">
+          <h3>Crédito Hipotecario Bancario</h3>
+          <p>Trabajamos con los principales bancos para conseguir tasas fijas y plazos de 10 a 20 años.</p>
+        </div>
+        <div class="opcion-pago">
+          <h3>Pago de Contado</h3>
+          <p>Descuentos especiales por pago directo y escrituración rápida ante notario público.</p>
+        </div>
+        <div class="opcion-pago">
+          <h3>Requisitos Básicos</h3>
+          <p>Identificación oficial (INE), CURP, comprobante de domicilio y comprobantes de ingresos.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="barra-contacto">
+    <p>
+      <a href="Ayudas.html" class="link-ayuda">Ayuda</a> |
+      Contacto: <span>Tel / WhatsApp: +52 868 000 0000</span> | <span>Correo: ventas@casamia.com</span> | <span>Horario: Lun - Sáb 9:00 AM - 6:00 PM</span>
+    </p>
+  </footer>
+
+  <script>
+    function alternarMenuPerfil(event) { event.stopPropagation(); document.getElementById("perfil-box").classList.toggle("menu-abierto"); }
+    document.addEventListener("click", function () { document.getElementById("perfil-box").classList.remove("menu-abierto"); });
+  </script>
+
+  <!-- Cuadro centrado con fondo borroso para Cerrar Sesión -->
+  <div class="overlay-borroso" id="modal-cerrar-sesion">
+    <div class="modal-cerrar">
+      <h3>¿Estás seguro que quieres cerrar sesión?</h3>
+      <p>Tendrás que volver a ingresar tu usuario y contraseña para entrar.</p>
+      <div class="botones-modal">
+        <button type="button" class="btn-modal-si" onclick="window.location.href='index.html'">Sí</button>
+        <button type="button" class="btn-modal-volver" onclick="cerrarModalCerrar()">Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function alternarMenuPerfil(event) {
+      event.stopPropagation();
+      document.getElementById("perfil-box").classList.toggle("menu-abierto");
+    }
+
+    document.addEventListener("click", function () {
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+    });
+
+    function abrirModalCerrar(event) {
+      event.preventDefault();
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+      document.getElementById("modal-cerrar-sesion").classList.add("activo");
+    }
+
+    function cerrarModalCerrar() {
+      document.getElementById("modal-cerrar-sesion").classList.remove("activo");
+    }
+  </script>
+  
+</body>
+</html>
