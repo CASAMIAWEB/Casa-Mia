@@ -1,1 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casa Mia | Principal</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
+    body {
+      min-height: 100vh;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url("imagenes/fondo-casa.jpeg");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #ffffff;
+      padding-bottom: 85px;
+    }
+
+    /* 1. Barra superior con 4 apartados y perfil a la derecha */
+    .barra-superior {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(20, 20, 20, 0.88);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 30px;
+      border-bottom: 2px solid #1b7a3d;
+      z-index: 30;
+    }
+
+    .marca {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffffff;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .menu-apartados {
+      display: flex;
+      gap: 18px;
+    }
+
+    .menu-apartados a {
+      color: #f0f0f0;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .menu-apartados a:hover {
+      background-color: #1b7a3d;
+      color: #ffffff;
+    }
+
+    /* Contenedor del ícono de perfil */
+    .perfil-contenedor {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .icono-perfil {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      background-color: #1b7a3d;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .perfil-contenedor:hover .icono-perfil {
+      border-color: #6ee79a;
+      transform: scale(1.05);
+    }
+
+    /* Puente invisible para que no se cierre al mover el cursor */
+    .perfil-contenedor::after {
+      content: "";
+      position: absolute;
+      top: 42px;
+      right: 0;
+      width: 100%;
+      height: 14px;
+    }
+
+    /* 1A. Cuadro informativo al pasar el mouse (sube de transparente a opaco) */
+    .tarjeta-perfil {
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 245px;
+      background-color: rgba(255, 255, 255, 0.97);
+      color: #222222;
+      padding: 14px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      text-align: left;
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+      pointer-events: none;
+    }
+
+    .perfil-contenedor:hover .tarjeta-perfil {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .perfil-contenedor.menu-abierto .tarjeta-perfil {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .tarjeta-perfil p {
+      font-size: 13px;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .tarjeta-perfil .etiqueta {
+      font-weight: bold;
+      color: #1b7a3d;
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    /* 1B. Menú vertical desplegable al dar CLIC en el perfil */
+    .menu-opciones-perfil {
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 210px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+
+    .perfil-contenedor.menu-abierto .menu-opciones-perfil {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .menu-opciones-perfil a {
+      display: block;
+      padding: 12px 16px;
+      color: #222222;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      border-bottom: 1px solid #eeeeee;
+      transition: background-color 0.2s;
+    }
+
+    .menu-opciones-perfil a:hover {
+      background-color: #f2f5f3;
+    }
+
+    .menu-opciones-perfil a.opcion-cerrar {
+      color: #d93025;
+      border-bottom: none;
+    }
+
+    .menu-opciones-perfil a.opcion-cerrar:hover {
+      background-color: #fdecea;
+    }
+
+    /* 2. Sección de introducción (resto de la página) */
+    .contenido-principal {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .caja-intro {
+      background-color: rgba(255, 255, 255, 0.92);
+      color: #222222;
+      padding: 32px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .caja-intro h1 {
+      color: #1b7a3d;
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    .caja-intro p.lead {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #444444;
+      margin-bottom: 24px;
+    }
+
+    .pasos-venta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .paso {
+      background-color: #f4f7f5;
+      border-left: 4px solid #1b7a3d;
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .paso h3 {
+      font-size: 16px;
+      color: #1b7a3d;
+      margin-bottom: 6px;
+    }
+
+    .paso p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333333;
+    }
+
+    /* 3. Ventana flotante de Cerrar Sesión con fondo borroso */
+    .overlay-borroso {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .overlay-borroso.activo {
+      display: flex;
+    }
+
+    .modal-cerrar {
+      background-color: #ffffff;
+      color: #222222;
+      width: 90%;
+      max-width: 380px;
+      padding: 28px 24px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      animation: aparecerModal 0.25s ease-out;
+    }
+
+    @keyframes aparecerModal {
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-cerrar h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #111111;
+    }
+
+    .modal-cerrar p {
+      font-size: 14px;
+      color: #555555;
+      margin-bottom: 22px;
+    }
+
+    .botones-modal {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn-modal-si {
+      flex: 1;
+      padding: 10px;
+      background-color: #d93025;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-modal-volver {
+      flex: 1;
+      padding: 10px;
+      background-color: #e4e6eb;
+      color: #222222;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    /* 4. Rectángulo blanco semitransparente al ras abajo */
+    .barra-contacto {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(4px);
+      color: #111111;
+      text-align: center;
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.9);
+      z-index: 25;
+    }
+
+    .barra-contacto p {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .barra-contacto span {
+      font-weight: normal;
+      margin: 0 10px;
+    }
+
+    .link-ayuda {
+      color: #1b7a3d;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-right: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra superior -->
+  <header class="barra-superior">
+    <a href="Principal.html" class="marca">Casa Mia</a>
+
+    <nav class="menu-apartados">
+      <a href="Catalogo.html">Catálogo</a>
+      <a href="Pagos.html">Créditos y Pagos</a>
+      <a href="Preventa.html">Terrenos y Preventas</a>
+      <a href="Vendecasa.html">Vende tu Casa</a>
+    </nav>
+
+    <!-- Ícono PNG de Perfil -->
+    <div class="perfil-contenedor" id="perfil-box" onclick="alternarMenuPerfil(event)">
+      <img src="imagenes/perfil.png" alt="Perfil" class="icono-perfil" />
+
+      <!-- Cuadro que sube de transparente a opaco al pasar el mouse -->
+      <div class="tarjeta-perfil">
+        <p>
+          <span class="etiqueta">Usuario</span>
+          Prueba
+        </p>
+        <p style="margin-bottom: 0;">
+          <span class="etiqueta">Correo vinculado</span>
+          ExampleCorreo@gmail.com
+        </p>
+      </div>
+
+      <!-- Rectángulo vertical desplegable al hacer clic -->
+      <div class="menu-opciones-perfil" onclick="event.stopPropagation()">
+        <a href="Cuenta.html">Mi cuenta</a>
+        <a href="Config.html">Configuración</a>
+        <a href="Favoritos.html">Favoritos</a>
+        <a href="#" class="opcion-cerrar" onclick="abrirModalCerrar(event)">Cerrar sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Introducción de cómo funciona la venta de casas -->
+  <main class="contenido-principal">
+    <section class="caja-intro">
+      <h1>Bienvenido a Casa Mia — ¿Cómo funciona?</h1>
+      <p class="lead">
+        En <strong>Casa Mia</strong> facilitamos la compra y venta de propiedades de forma transparente, rápida y sin intermediarios complicados. Aquí puedes explorar nuestro catálogo de viviendas verificadas y elegir la opción que mejor se adapte a tu presupuesto.
+      </p>
+
+      <div class="pasos-venta">
+        <div class="paso">
+          <h3>1. Explora el catálogo</h3>
+          <p>Revisa las casas disponibles por ubicación, tamaño, número de recámaras y precio actualizado.</p>
+        </div>
+
+        <div class="paso">
+          <h3>2. Agenda una visita</h3>
+          <p>Elige la propiedad que te interese y contáctanos para conocerla en persona sin compromiso.</p>
+        </div>
+
+        <div class="paso">
+          <h3>3. Elige tu forma de pago</h3>
+          <p>Aceptamos compra de contado, crédito Infonavit, Fovissste o financiamiento bancario.</p>
+        </div>
+
+        <div class="paso">
+          <h3>4. Escrituración segura</h3>
+          <p>Te acompañamos ante notario público hasta la entrega oficial de las llaves de tu nuevo hogar.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cuadro centrado con fondo borroso para Cerrar Sesión -->
+  <div class="overlay-borroso" id="modal-cerrar-sesion">
+    <div class="modal-cerrar">
+      <h3>¿Estás seguro que quieres cerrar sesión?</h3>
+      <p>Tendrás que volver a ingresar tu usuario y contraseña para entrar.</p>
+      <div class="botones-modal">
+        <button type="button" class="btn-modal-si" onclick="window.location.href='index.html'">Sí</button>
+        <button type="button" class="btn-modal-volver" onclick="cerrarModalCerrar()">Volver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra inferior con Ayuda y contactos -->
+  <footer class="barra-contacto">
+    <p>
+      <a href="Ayudas.html" class="link-ayuda">Ayuda</a> |
+      Contacto:
+      <span>Tel / WhatsApp: +52 868 000 0000</span> |
+      <span>Correo: ventas@casamia.com</span> |
+      <span>Horario: Lun - Sáb 9:00 AM - 6:00 PM</span>
+    </p>
+  </footer>
+
+  <script>
+    function alternarMenuPerfil(event) {
+      event.stopPropagation();
+      document.getElementById("perfil-box").classList.toggle("menu-abierto");
+    }
+
+    document.addEventListener("click", function () {
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+    });
+
+    function abrirModalCerrar(event) {
+      event.preventDefault();
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+      document.getElementById("modal-cerrar-sesion").classList.add("activo");
+    }
+
+    function cerrarModalCerrar() {
+      document.getElementById("modal-cerrar-sesion").classList.remove("activo");
+    }
+  </script>
+
+</body>
+</html>
