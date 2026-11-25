@@ -1,5 +1,4 @@
 const INVENTARIO_CASAS = {
-  const INVENTARIO_CASAS = {
   "casa-magisterial1": {
     nombre: "Casa en Venta en Col. Magisterial",
     estadoEtiqueta: "Entrega Inmediata",
@@ -27,9 +26,10 @@ const INVENTARIO_CASAS = {
       "Compra de Contado"
     ],
     galeria: [
-      { src: "imagenes/Magisterial1.Frente.jpeg", texto: "Frente" },
+      { src: "imagenes/Magisterial1.Frente.jpeg", texto: "Frente" }
+    ]
   },
-    
+
   "casa-arboledas1": {
     nombre: "Casa en Venta en Arboledas",
     estadoEtiqueta: "Entrega Inmediata",
@@ -62,5 +62,5 @@ const INVENTARIO_CASAS = {
       { src: "imagenes/Arboleda1.Acceso.jpeg", texto: "Acceso" },
       { src: "imagenes/Arboleda1.Vista.jpeg", texto: "Vista" }
     ]
-  },
+  }
 };
