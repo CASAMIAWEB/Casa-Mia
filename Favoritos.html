@@ -5,86 +5,508 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Casa Mia | Mis Favoritos</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
     body {
       min-height: 100vh;
       background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url("imagenes/fondo-casa.jpeg");
-      background-size: cover; background-position: center; background-attachment: fixed;
-      color: #ffffff; padding-bottom: 85px;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #ffffff;
+      padding-bottom: 85px;
     }
+
+    /* Barra superior */
     .barra-superior {
-      position: sticky; top: 0; width: 100%; background-color: rgba(20, 20, 20, 0.88);
-      backdrop-filter: blur(6px); display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 30px; border-bottom: 2px solid #1b7a3d; z-index: 30;
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: rgba(20, 20, 20, 0.88);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 30px;
+      border-bottom: 2px solid #1b7a3d;
+      z-index: 30;
     }
-    .marca { font-size: 22px; font-weight: bold; color: #ffffff; text-decoration: none; letter-spacing: 1px; }
-    .menu-apartados { display: flex; gap: 18px; }
+
+    .marca {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffffff;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+
+    .menu-apartados {
+      display: flex;
+      gap: 18px;
+    }
+
     .menu-apartados a {
-      color: #f0f0f0; text-decoration: none; font-weight: bold; font-size: 15px;
-      padding: 8px 14px; border-radius: 6px; transition: background-color 0.2s;
+      color: #f0f0f0;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 15px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: background-color 0.2s;
     }
-    .menu-apartados a:hover { background-color: #1b7a3d; color: #ffffff; }
+
+    .menu-apartados a:hover,
+    .menu-apartados a.activo {
+      background-color: #1b7a3d;
+      color: #ffffff;
+    }
 
     /* Perfil */
-    .perfil-contenedor { position: relative; display: inline-block; cursor: pointer; }
-    .icono-perfil { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #ffffff; background-color: #1b7a3d; object-fit: cover; display: block; }
-    .perfil-contenedor::after { content: ""; position: absolute; top: 42px; right: 0; width: 100%; height: 14px; }
-    .tarjeta-perfil {
-      position: absolute; right: 0; top: 52px; width: 245px; background-color: rgba(255, 255, 255, 0.97);
-      color: #222; padding: 14px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-      opacity: 0; visibility: hidden; transform: translateY(12px); transition: 0.3s ease; pointer-events: none; z-index: 40;
+    .perfil-contenedor {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
     }
-    .perfil-contenedor:hover .tarjeta-perfil { opacity: 1; visibility: visible; transform: translateY(0); }
-    .perfil-contenedor.menu-abierto .tarjeta-perfil { opacity: 0; visibility: hidden; }
-    .tarjeta-perfil p { font-size: 13px; margin-bottom: 6px; }
-    .tarjeta-perfil .etiqueta { font-weight: bold; color: #1b7a3d; display: block; font-size: 11px; text-transform: uppercase; }
-    .menu-opciones-perfil {
-      position: absolute; right: 0; top: 52px; width: 210px; background-color: #fff; border-radius: 10px;
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4); overflow: hidden; z-index: 45; display: flex; flex-direction: column;
-      opacity: 0; visibility: hidden; transform: translateY(-8px); transition: 0.25s ease;
-    }
-    .perfil-contenedor.menu-abierto .menu-opciones-perfil { opacity: 1; visibility: visible; transform: translateY(0); }
-    .menu-opciones-perfil a { display: block; padding: 12px 16px; color: #222; text-decoration: none; font-size: 14px; font-weight: bold; border-bottom: 1px solid #eee; }
-    .menu-opciones-perfil a:hover { background-color: #f2f5f3; }
-    .menu-opciones-perfil a.opcion-cerrar { color: #d93025; border-bottom: none; }
 
-    /* Contenido Favoritos */
-    .contenedor { max-width: 960px; margin: 35px auto; padding: 0 20px; }
-    .caja { background-color: rgba(255, 255, 255, 0.94); color: #222; padding: 30px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
-    .caja h1 { color: #1b7a3d; font-size: 28px; margin-bottom: 10px; }
-    .lista-favs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 20px; }
-    .card-fav { background: #f4f7f5; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; }
-    .card-fav img { width: 100%; height: 170px; object-fit: cover; }
-    .card-fav-body { padding: 15px; }
-    .card-fav-body h3 { margin-bottom: 6px; font-size: 18px; }
-    .precio { color: #1b7a3d; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-    .btn-quitar { background-color: #e0e0e0; color: #222; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .icono-perfil {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      background-color: #ffffff;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .perfil-contenedor:hover .icono-perfil {
+      border-color: #6ee79a;
+      transform: scale(1.05);
+    }
+
+    .perfil-contenedor::after {
+      content: "";
+      position: absolute;
+      top: 42px;
+      right: 0;
+      width: 100%;
+      height: 14px;
+    }
+
+    .tarjeta-perfil {
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 245px;
+      background-color: rgba(255, 255, 255, 0.97);
+      color: #222222;
+      padding: 14px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      text-align: left;
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+      pointer-events: none;
+    }
+
+    .perfil-contenedor:hover .tarjeta-perfil {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .perfil-contenedor.menu-abierto .tarjeta-perfil {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .tarjeta-perfil p {
+      font-size: 13px;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .tarjeta-perfil .etiqueta {
+      font-weight: bold;
+      color: #1b7a3d;
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .menu-opciones-perfil {
+      position: absolute;
+      right: 0;
+      top: 52px;
+      width: 210px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    }
+
+    .perfil-contenedor.menu-abierto .menu-opciones-perfil {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .menu-opciones-perfil a {
+      display: block;
+      padding: 12px 16px;
+      color: #222222;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .menu-opciones-perfil a:hover {
+      background-color: #f2f5f3;
+    }
+
+    .menu-opciones-perfil a.opcion-cerrar {
+      color: #d93025;
+      border-bottom: none;
+    }
+
+    /* Contenedor principal */
+    .contenedor {
+      max-width: 1380px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .encabezado-seccion {
+      background-color: rgba(255, 255, 255, 0.94);
+      color: #222222;
+      padding: 24px 28px;
+      border-radius: 14px;
+      margin-bottom: 26px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .encabezado-seccion h1 {
+      color: #1b7a3d;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .encabezado-seccion p {
+      color: #444444;
+      font-size: 15px;
+    }
+
+    .grid-casas {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .tarjeta-casa {
+      background-color: rgba(255, 255, 255, 0.96);
+      color: #222222;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease;
+    }
+
+    .tarjeta-casa:hover {
+      transform: translateY(-4px);
+    }
+
+    .portada-casa {
+      position: relative;
+      height: 195px;
+      background-color: #d8dee4;
+    }
+
+    .portada-casa img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .etiqueta-estado {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background-color: rgba(20, 20, 20, 0.85);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+
+    .btn-favorito {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #e63946;
+      font-size: 19px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s;
+      z-index: 5;
+    }
+
+    .btn-favorito:hover {
+      transform: scale(1.1);
+    }
+
+    .info-casa {
+      padding: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .precio {
+      font-size: 21px;
+      font-weight: bold;
+      color: #1b7a3d;
+      margin-bottom: 4px;
+    }
+
+    .titulo-casa {
+      font-size: 17px;
+      font-weight: bold;
+      color: #111111;
+      margin-bottom: 6px;
+    }
+
+    .ubicacion-corta {
+      font-size: 13px;
+      color: #555555;
+      margin-bottom: 12px;
+    }
+
+    .resumen-ficha {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .pill-dato {
+      background-color: #f0f5f2;
+      color: #1b7a3d;
+      border: 1px solid #cce0d3;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
+    .pagos-resumen {
+      font-size: 12px;
+      color: #333333;
+      border-top: 1px solid #e6e6e6;
+      padding-top: 10px;
+      margin-bottom: 14px;
+    }
+
+    .btn-visualizar {
+      display: block;
+      text-align: center;
+      background-color: #1b7a3d;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 13px;
+      letter-spacing: 0.8px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-visualizar:hover {
+      background-color: #145e2e;
+    }
+
+    /* Mensaje cuando no hay favoritos */
+    .estado-vacio {
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #222222;
+      border-radius: 14px;
+      padding: 45px 24px;
+      text-align: center;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+    }
+
+    .estado-vacio h2 {
+      font-size: 22px;
+      color: #111111;
+      margin-bottom: 10px;
+    }
+
+    .estado-vacio p {
+      font-size: 15px;
+      color: #555555;
+      margin-bottom: 22px;
+    }
+
+    .btn-ir-catalogo {
+      display: inline-block;
+      background-color: #1b7a3d;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .btn-ir-catalogo:hover {
+      background-color: #145e2e;
+    }
 
     /* Modal Cerrar Sesión */
     .overlay-borroso {
-      position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
-      display: none; align-items: center; justify-content: center; z-index: 100;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
     }
-    .overlay-borroso.activo { display: flex; }
+
+    .overlay-borroso.activo {
+      display: flex;
+    }
+
     .modal-cerrar {
-      background-color: #ffffff; color: #222; width: 90%; max-width: 380px; padding: 28px 24px;
-      border-radius: 14px; text-align: center; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      background-color: #ffffff;
+      color: #222222;
+      width: 90%;
+      max-width: 380px;
+      padding: 28px 24px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
     }
-    .modal-cerrar h3 { font-size: 20px; margin-bottom: 10px; }
-    .modal-cerrar p { font-size: 14px; color: #555; margin-bottom: 22px; }
-    .botones-modal { display: flex; gap: 12px; }
-    .btn-modal-si { flex: 1; padding: 10px; background-color: #d93025; color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
-    .btn-modal-volver { flex: 1; padding: 10px; background-color: #e4e6eb; color: #222; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+
+    .modal-cerrar h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .modal-cerrar p {
+      font-size: 14px;
+      color: #555555;
+      margin-bottom: 22px;
+    }
+
+    .botones-modal {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-modal-si {
+      flex: 1;
+      padding: 10px;
+      background-color: #d93025;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .btn-modal-volver {
+      flex: 1;
+      padding: 10px;
+      background-color: #e4e6eb;
+      color: #222222;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
 
     /* Footer */
     .barra-contacto {
-      position: fixed; bottom: 0; left: 0; width: 100%; background-color: rgba(255, 255, 255, 0.78);
-      backdrop-filter: blur(4px); color: #111; text-align: center; padding: 14px 20px; border-top: 1px solid rgba(255, 255, 255, 0.9); z-index: 25;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(4px);
+      color: #111111;
+      text-align: center;
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.9);
+      z-index: 25;
     }
-    .barra-contacto p { font-size: 15px; font-weight: bold; }
-    .barra-contacto span { font-weight: normal; margin: 0 10px; }
-    .link-ayuda { color: #1b7a3d; font-weight: bold; text-decoration: underline; margin-right: 12px; }
+
+    .barra-contacto p {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .barra-contacto span {
+      font-weight: normal;
+      margin: 0 10px;
+    }
+
+    .link-ayuda {
+      color: #1b7a3d;
+      font-weight: bold;
+      text-decoration: underline;
+      margin-right: 12px;
+    }
+
+    @media (max-width: 1150px) {
+      .grid-casas {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid-casas {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -97,6 +519,7 @@
       <a href="Preventa.html">Terrenos y Preventas</a>
       <a href="Vendecasa.html">Vende tu Casa</a>
     </nav>
+
     <div class="perfil-contenedor" id="perfil-box" onclick="alternarMenuPerfil(event)">
       <img src="imagenes/perfil.png" alt="Perfil" class="icono-perfil" />
       <div class="tarjeta-perfil">
@@ -113,30 +536,16 @@
   </header>
 
   <main class="contenedor">
-    <section class="caja">
-      <h1>Mis Propiedades Favoritas</h1>
-      <p>Aquí aparecen las casas que has guardado para revisar más tarde.</p>
-
-      <div class="lista-favs">
-        <div class="card-fav" id="fav-1">
-          <img src="imagenes/presentacion.jpeg" alt="Residencial Las Palmas" />
-          <div class="card-fav-body">
-            <h3>Residencial Las Palmas</h3>
-            <div class="precio">$1,850,000 MXN</div>
-            <button type="button" class="btn-quitar" onclick="document.getElementById('fav-1').style.display='none'">Quitar de favoritos</button>
-          </div>
-        </div>
-
-        <div class="card-fav" id="fav-2">
-          <img src="imagenes/fondo-casa.jpeg" alt="Fraccionamiento Valle Verde" />
-          <div class="card-fav-body">
-            <h3>Fraccionamiento Valle Verde</h3>
-            <div class="precio">$1,320,000 MXN</div>
-            <button type="button" class="btn-quitar" onclick="document.getElementById('fav-2').style.display='none'">Quitar de favoritos</button>
-          </div>
-        </div>
+    <div class="encabezado-seccion">
+      <div>
+        <h1>Mis Propiedades Favoritas</h1>
+        <p>Aquí aparecen las casas que guardaste con el corazón desde el catálogo.</p>
       </div>
-    </section>
+      <a href="Catalogo.html" class="btn-ir-catalogo">Explorar Catálogo</a>
+    </div>
+
+    <div class="grid-casas" id="grid-favoritos"></div>
+    <div id="contenedor-vacio"></div>
   </main>
 
   <div class="overlay-borroso" id="modal-cerrar-sesion">
@@ -157,11 +566,111 @@
     </p>
   </footer>
 
+  <script src="inventario.js"></script>
   <script>
-    function alternarMenuPerfil(event) { event.stopPropagation(); document.getElementById("perfil-box").classList.toggle("menu-abierto"); }
-    document.addEventListener("click", function () { document.getElementById("perfil-box").classList.remove("menu-abierto"); });
-    function abrirModalCerrar(event) { event.preventDefault(); document.getElementById("perfil-box").classList.remove("menu-abierto"); document.getElementById("modal-cerrar-sesion").classList.add("activo"); }
-    function cerrarModalCerrar() { document.getElementById("modal-cerrar-sesion").classList.remove("activo"); }
+    const CLAVE_FAVORITOS = "casamia_favoritos";
+
+    function obtenerFavoritos() {
+      try {
+        return JSON.parse(localStorage.getItem(CLAVE_FAVORITOS)) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function quitarFavorito(id) {
+      const nuevos = obtenerFavoritos().filter((favId) => favId !== id);
+      localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(nuevos));
+      renderizarFavoritos();
+    }
+
+    function renderizarFavoritos() {
+      const grid = document.getElementById("grid-favoritos");
+      const vacioBox = document.getElementById("contenedor-vacio");
+      grid.innerHTML = "";
+      vacioBox.innerHTML = "";
+
+      // Filtrar solo los IDs que existan actualmente en INVENTARIO_CASAS
+      const idsValidos = obtenerFavoritos().filter((id) => INVENTARIO_CASAS[id]);
+
+      if (idsValidos.length === 0) {
+        vacioBox.innerHTML = `
+          <div class="estado-vacio">
+            <h2>Aún no tienes propiedades en favoritos</h2>
+            <p>Entra al catálogo y presiona el ícono de corazón (♡) en las casas que te interesen para guardarlas aquí.</p>
+            <a href="Catalogo.html" class="btn-ir-catalogo">Ir al Catálogo</a>
+          </div>
+        `;
+        return;
+      }
+
+      idsValidos.forEach((id) => {
+        const casa = INVENTARIO_CASAS[id];
+        const fotoPortada = (casa.galeria && casa.galeria[0])
+          ? casa.galeria[0].src
+          : "imagenes/presentacion.jpeg";
+
+        const creditosRapidos = (casa.creditos && casa.creditos.length > 0)
+          ? casa.creditos.join(" · ")
+          : "Consultar opciones";
+
+        const tarjeta = document.createElement("article");
+        tarjeta.className = "tarjeta-casa";
+
+        tarjeta.innerHTML = `
+          <div class="portada-casa">
+            <span class="etiqueta-estado">${casa.estadoEtiqueta || "Disponible"}</span>
+            <button type="button"
+                    class="btn-favorito"
+                    title="Quitar de favoritos"
+                    onclick="quitarFavorito('${id}')">
+              ♥
+            </button>
+            <img src="${fotoPortada}" alt="${casa.nombre}" />
+          </div>
+          <div class="info-casa">
+            <div>
+              <div class="precio">${casa.precio}</div>
+              <div class="titulo-casa">${casa.nombre}</div>
+              <div class="ubicacion-corta">${casa.ubicacion}</div>
+              <div class="resumen-ficha">
+                <span class="pill-dato">${casa.recamaras}</span>
+                <span class="pill-dato">${casa.banos}</span>
+                <span class="pill-dato">${casa.medidas}</span>
+                <span class="pill-dato">${casa.cochera}</span>
+              </div>
+              <div class="pagos-resumen">
+                <strong>Créditos / Pagos:</strong> ${creditosRapidos}
+              </div>
+            </div>
+            <a href="Propiedad.html?id=${encodeURIComponent(id)}" class="btn-visualizar">VISUALIZAR</a>
+          </div>
+        `;
+
+        grid.appendChild(tarjeta);
+      });
+    }
+
+    renderizarFavoritos();
+
+    function alternarMenuPerfil(event) {
+      event.stopPropagation();
+      document.getElementById("perfil-box").classList.toggle("menu-abierto");
+    }
+
+    document.addEventListener("click", function () {
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+    });
+
+    function abrirModalCerrar(event) {
+      event.preventDefault();
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+      document.getElementById("modal-cerrar-sesion").classList.add("activo");
+    }
+
+    function cerrarModalCerrar() {
+      document.getElementById("modal-cerrar-sesion").classList.remove("activo");
+    }
   </script>
 </body>
 </html>
