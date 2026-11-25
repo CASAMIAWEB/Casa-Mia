@@ -1,4 +1,39 @@
 const INVENTARIO_CASAS = {
+  const INVENTARIO_CASAS = {
+  "casa-magisterial1": {
+    nombre: "Casa en Venta en Col. Magisterial",
+    estadoEtiqueta: "Entrega Inmediata",
+    ubicacion: "Col. Magisterial · Citas al 868 797 3665",
+    precio: "$2,750,000 MXN",
+    subprecio: "¡Aplica Infonavit Total, Bancario y Contado! · Citas: 868 797 3665",
+    recamaras: "3 Recámaras",
+    banos: "2.5 Baños",
+    medidas: "Terreno: 6.96 x 25 m · Construcción: 161.30 m²",
+    cochera: "Para 2 autos",
+    descripcion: "Casa en venta en Col. Magisterial con excelente distribución, amplios espacios en sala, comedor y cocina, además de recámara principal con baño y clóset vestidor. Agenda tu cita al 868 797 3665.",
+    extras: [
+      "Sala, comedor y cocina",
+      "Recámara principal con baño completo y clóset vestidor",
+      "2 recámaras secundarias",
+      "2.5 baños en total",
+      "Área de lavandería",
+      "Cochera para 2 autos",
+      "Terreno de 6.96 x 25 m y 161.30 m² de construcción",
+      "Citas e informes: 868 797 3665"
+    ],
+    creditos: [
+      "Crédito Infonavit Total",
+      "Crédito Hipotecario Bancario",
+      "Compra de Contado"
+    ],
+    galeria: [
+      { src: "imagenes/Magisterial1.Frente.jpeg", texto: "Frente" },
+      { src: "imagenes/Magisterial1.Lateral.jpeg", texto: "Lateral" },
+      { src: "imagenes/Magisterial1.Acceso.jpeg", texto: "Acceso" },
+      { src: "imagenes/Magisterial1.Vista.jpeg", texto: "Vista" }
+      ]
+  },
+    
   "casa-arboledas1": {
     nombre: "Casa en Venta en Arboledas",
     estadoEtiqueta: "Entrega Inmediata",
