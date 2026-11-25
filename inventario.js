@@ -1,7 +1,7 @@
 const INVENTARIO_CASAS = {
   "casa-magisterial1": {
     nombre: "Casa en Venta en Col. Magisterial",
-    estadoEtiqueta: "Entrega Inmediata",
+    estadoEtiqueta: "¡PREVENTA!",
     ubicacion: "Col. Magisterial · Citas al 868 797 3665",
     precio: "$2,750,000 MXN",
     subprecio: "¡Aplica Infonavit Total, Bancario y Contado! · Citas: 868 797 3665",
@@ -32,7 +32,7 @@ const INVENTARIO_CASAS = {
 
   "casa-arboledas1": {
     nombre: "Casa en Venta en Arboledas",
-    estadoEtiqueta: "Entrega Inmediata",
+    estadoEtiqueta: "Compra de Terceros",
     ubicacion: "Arboledas · Citas al 868 797 3665",
     precio: "$3,200,000 MXN",
     subprecio: "¡Aplica todos los créditos! · Citas: 868 797 3665",
