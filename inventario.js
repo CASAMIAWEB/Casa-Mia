@@ -95,12 +95,12 @@ const INVENTARIO_CASAS = {
       "Compra de Contado"
     ],
     galeria: [
-      { src: "imagenes/Bagdad1.Frente.jpeg", texto: "Frente" },
-      { src: "imagenes/Bagdad1.FOTO1.jpeg", texto: "Interior" },
-      { src: "imagenes/Bagdad1.FOTO2.jpeg", texto: "Interior" },
-      { src: "imagenes/Bagdad1.FOTO3.jpeg", texto: "Interior" },
-      { src: "imagenes/Bagdad1.FOTO4.jpeg", texto: "Interior" },
-      { src: "imagenes/Bagdad1.FOTO5.jpeg", texto: "Exterior" }
+      { src: "imagenes/Bagdad2.Frente.jpeg", texto: "Frente" },
+      { src: "imagenes/Bagdad2.FOTO1.jpeg", texto: "Interior" },
+      { src: "imagenes/Bagdad2.FOTO2.jpeg", texto: "Interior" },
+      { src: "imagenes/Bagdad2.FOTO3.jpeg", texto: "Interior" },
+      { src: "imagenes/Bagdad2.FOTO4.jpeg", texto: "Interior" },
+      { src: "imagenes/Bagdad2.FOTO5.jpeg", texto: "Exterior" }
     ]
   },
 
