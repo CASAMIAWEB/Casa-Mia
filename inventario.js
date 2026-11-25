@@ -28,10 +28,6 @@ const INVENTARIO_CASAS = {
     ],
     galeria: [
       { src: "imagenes/Magisterial1.Frente.jpeg", texto: "Frente" },
-      { src: "imagenes/Magisterial1.Lateral.jpeg", texto: "Lateral" },
-      { src: "imagenes/Magisterial1.Acceso.jpeg", texto: "Acceso" },
-      { src: "imagenes/Magisterial1.Vista.jpeg", texto: "Vista" }
-      ]
   },
     
   "casa-arboledas1": {
