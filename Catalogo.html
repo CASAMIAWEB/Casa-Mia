@@ -201,8 +201,13 @@
       color: #222222;
       padding: 24px 28px;
       border-radius: 14px;
-      margin-bottom: 26px;
+      margin-bottom: 20px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
     }
 
     .encabezado-seccion h1 {
@@ -214,6 +219,114 @@
     .encabezado-seccion p {
       color: #444444;
       font-size: 15px;
+    }
+
+    .acciones-encabezado {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .contador-propiedades {
+      background-color: #f0f5f2;
+      color: #1b7a3d;
+      border: 1px solid #b8d8c3;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .btn-borrar-filtros {
+      background-color: #d93025;
+      color: #ffffff;
+      border: none;
+      padding: 9px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      display: none;
+      transition: background-color 0.2s, transform 0.15s;
+    }
+
+    .btn-borrar-filtros.visible {
+      display: inline-block;
+    }
+
+    .btn-borrar-filtros:hover {
+      background-color: #b5231a;
+      transform: translateY(-1px);
+    }
+
+    /* Panel de Filtros y Orden */
+    .panel-filtros {
+      background-color: rgba(255, 255, 255, 0.96);
+      color: #222222;
+      padding: 20px 24px;
+      border-radius: 14px;
+      margin-bottom: 26px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .grid-filtros {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr) auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .campo-filtro {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .campo-filtro label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #1b7a3d;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .campo-filtro input,
+    .campo-filtro select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cccccc;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #222222;
+      background-color: #ffffff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .campo-filtro input:focus,
+    .campo-filtro select:focus {
+      border-color: #1b7a3d;
+      box-shadow: 0 0 0 2px rgba(27, 122, 61, 0.16);
+    }
+
+    .btn-aplicar {
+      background-color: #1b7a3d;
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      height: 39px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.2s, transform 0.15s;
+    }
+
+    .btn-aplicar:hover {
+      background-color: #145e2e;
+      transform: translateY(-1px);
     }
 
     /* 4 tarjetas por fila y nueva fila automática cada 4 */
@@ -263,6 +376,7 @@
       border-radius: 6px;
     }
 
+    /* Animación de corazón */
     .btn-favorito {
       position: absolute;
       top: 10px;
@@ -470,6 +584,27 @@
       background-color: #145e2e;
     }
 
+    .sin-resultados {
+      background-color: rgba(255, 255, 255, 0.95);
+      color: #222222;
+      border-radius: 14px;
+      padding: 36px 24px;
+      text-align: center;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3);
+      margin-top: 10px;
+    }
+
+    .sin-resultados h3 {
+      font-size: 20px;
+      color: #111111;
+      margin-bottom: 8px;
+    }
+
+    .sin-resultados p {
+      font-size: 14px;
+      color: #555555;
+    }
+
     /* Modal Cerrar Sesión */
     .overlay-borroso {
       position: fixed;
@@ -583,6 +718,15 @@
       margin-right: 12px;
     }
 
+    @media (max-width: 1220px) {
+      .grid-filtros {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .btn-aplicar {
+        grid-column: span 3;
+      }
+    }
+
     @media (max-width: 1150px) {
       .grid-casas {
         grid-template-columns: repeat(2, 1fr);
@@ -590,6 +734,12 @@
     }
 
     @media (max-width: 640px) {
+      .grid-filtros {
+        grid-template-columns: 1fr;
+      }
+      .btn-aplicar {
+        grid-column: span 1;
+      }
       .grid-casas {
         grid-template-columns: 1fr;
       }
@@ -624,11 +774,76 @@
 
   <main class="contenedor">
     <div class="encabezado-seccion">
-      <h1>Catálogo de Propiedades</h1>
-      <p>Haz clic en <strong>VISUALIZAR</strong> en cualquier propiedad para ver todas sus fotos, medidas exactas, ubicación y créditos aceptados.</p>
+      <div>
+        <h1>Catálogo de Propiedades</h1>
+        <p>Filtra por texto, rango de precio, recámaras o método de pago y presiona <strong>Aplicar</strong>.</p>
+      </div>
+      <div class="acciones-encabezado">
+        <span class="contador-propiedades" id="contador-propiedades">Mostrando 0 propiedades</span>
+        <button type="button" class="btn-borrar-filtros" id="btn-borrar-filtros" onclick="borrarTodosLosFiltros()">
+          Borrar todos los filtros
+        </button>
+      </div>
     </div>
 
+    <section class="panel-filtros" aria-label="Filtros y orden del catálogo">
+      <div class="grid-filtros">
+        <div class="campo-filtro">
+          <label for="filtro-texto">Buscar por texto</label>
+          <input type="text" id="filtro-texto" placeholder="Ej. Arboledas, portón..." onkeydown="manejarEnterFiltro(event)" />
+        </div>
+
+        <div class="campo-filtro">
+          <label for="filtro-precio">Rango de precio</label>
+          <select id="filtro-precio">
+            <option value="">Todos los precios</option>
+            <option value="1m-1.5m">$1,000,000 a $1,500,000</option>
+            <option value="1.6m-2.5m">$1,600,000 a $2,500,000</option>
+            <option value="2.6m-3.5m">$2,600,000 a $3,500,000</option>
+            <option value="3.5m-plus">Más de $3,500,000</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="filtro-recamaras">Recámaras</label>
+          <select id="filtro-recamaras">
+            <option value="">Cualquiera</option>
+            <option value="1">1 recámara</option>
+            <option value="2">2 recámaras</option>
+            <option value="3">3 recámaras</option>
+            <option value="4">4 recámaras</option>
+            <option value="5">5 recámaras</option>
+            <option value="6">6 recámaras</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="filtro-pago">Método de pago</label>
+          <select id="filtro-pago">
+            <option value="">Todos los métodos</option>
+            <option value="infonavit">Infonavit</option>
+            <option value="fovissste">Fovissste</option>
+            <option value="bancario">Crédito Hipotecario Bancario</option>
+            <option value="cofinavit">Cofinavit / Apoyo Infonavit</option>
+            <option value="contado">Compra de Contado</option>
+          </select>
+        </div>
+
+        <div class="campo-filtro">
+          <label for="orden-precio">Ordenar por precio</label>
+          <select id="orden-precio">
+            <option value="">Predeterminado</option>
+            <option value="menor-mayor">Menor a mayor</option>
+            <option value="mayor-menor">Mayor a menor</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn-aplicar" onclick="aplicarFiltros()">Aplicar</button>
+      </div>
+    </section>
+
     <div class="grid-casas" id="grid-catalogo"></div>
+    <div id="mensaje-vacio"></div>
   </main>
 
   <div class="overlay-borroso" id="modal-cerrar-sesion">
@@ -653,11 +868,130 @@
   <script>
     const CLAVE_FAVORITOS = "casamia_favoritos";
 
+    let estadoAplicado = {
+      texto: "",
+      precio: "",
+      recamaras: "",
+      pago: "",
+      orden: ""
+    };
+
     function obtenerFavoritos() {
       try {
         return JSON.parse(localStorage.getItem(CLAVE_FAVORITOS)) || [];
       } catch (e) {
         return [];
+      }
+    }
+
+    function extraerPrecioNumerico(precioTexto) {
+      if (!precioTexto) return 0;
+      const limpio = String(precioTexto).replace(/[^0-9.]/g, "");
+      const valor = parseFloat(limpio);
+      return Number.isNaN(valor) ? 0 : valor;
+    }
+
+    function extraerNumeroRecamaras(recamarasTexto) {
+      if (!recamarasTexto) return null;
+      const match = String(recamarasTexto).match(/\d+/);
+      return match ? parseInt(match[0], 10) : null;
+    }
+
+    function cumpleRangoPrecio(precioNum, rango) {
+      if (!rango) return true;
+      if (rango === "1m-1.5m") return precioNum >= 1000000 && precioNum <= 1500000;
+      if (rango === "1.6m-2.5m") return precioNum >= 1600000 && precioNum <= 2500000;
+      if (rango === "2.6m-3.5m") return precioNum >= 2600000 && precioNum <= 3500000;
+      if (rango === "3.5m-plus") return precioNum > 3500000;
+      return true;
+    }
+
+    function cumpleMetodoPago(casa, metodoSeleccionado) {
+      if (!metodoSeleccionado) return true;
+      const lista = Array.isArray(casa.creditos) ? casa.creditos : [];
+      return lista.some((item) => item.toLowerCase().includes(metodoSeleccionado.toLowerCase()));
+    }
+
+    function cumpleTexto(id, casa, textoBuscado) {
+      if (!textoBuscado) return true;
+      const q = textoBuscado.trim().toLowerCase();
+      const extrasTexto = Array.isArray(casa.extras) ? casa.extras.join(" ") : "";
+      const creditosTexto = Array.isArray(casa.creditos) ? casa.creditos.join(" ") : "";
+      const conjunto = [
+        id,
+        casa.nombre,
+        casa.estadoEtiqueta,
+        casa.ubicacion,
+        casa.precio,
+        casa.recamaras,
+        casa.banos,
+        casa.medidas,
+        casa.cochera,
+        casa.descripcion,
+        extrasTexto,
+        creditosTexto
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return conjunto.includes(q);
+    }
+
+    function hayFiltrosActivos() {
+      return Boolean(
+        estadoAplicado.texto.trim() !== "" ||
+        estadoAplicado.precio !== "" ||
+        estadoAplicado.recamaras !== "" ||
+        estadoAplicado.pago !== "" ||
+        estadoAplicado.orden !== ""
+      );
+    }
+
+    function actualizarBotonesEstado() {
+      const btnBorrar = document.getElementById("btn-borrar-filtros");
+      if (hayFiltrosActivos()) {
+        btnBorrar.classList.add("visible");
+      } else {
+        btnBorrar.classList.remove("visible");
+      }
+    }
+
+    function aplicarFiltros() {
+      estadoAplicado = {
+        texto: document.getElementById("filtro-texto").value,
+        precio: document.getElementById("filtro-precio").value,
+        recamaras: document.getElementById("filtro-recamaras").value,
+        pago: document.getElementById("filtro-pago").value,
+        orden: document.getElementById("orden-precio").value
+      };
+
+      actualizarBotonesEstado();
+      renderizarCatalogo();
+    }
+
+    function borrarTodosLosFiltros() {
+      document.getElementById("filtro-texto").value = "";
+      document.getElementById("filtro-precio").value = "";
+      document.getElementById("filtro-recamaras").value = "";
+      document.getElementById("filtro-pago").value = "";
+      document.getElementById("orden-precio").value = "";
+
+      estadoAplicado = {
+        texto: "",
+        precio: "",
+        recamaras: "",
+        pago: "",
+        orden: ""
+      };
+
+      actualizarBotonesEstado();
+      renderizarCatalogo();
+    }
+
+    function manejarEnterFiltro(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        aplicarFiltros();
       }
     }
 
@@ -735,12 +1069,55 @@
       localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(favoritos));
     }
 
+    function obtenerPropiedadesFiltradasYOrdenadas() {
+      const entradas = Object.entries(INVENTARIO_CASAS);
+      const recDeseadas = estadoAplicado.recamaras ? parseInt(estadoAplicado.recamaras, 10) : null;
+
+      let filtradas = entradas.filter(([id, casa]) => {
+        const precioNum = extraerPrecioNumerico(casa.precio);
+        const recNum = extraerNumeroRecamaras(casa.recamaras);
+
+        const okTexto = cumpleTexto(id, casa, estadoAplicado.texto);
+        const okPrecio = cumpleRangoPrecio(precioNum, estadoAplicado.precio);
+        const okRecamaras = recDeseadas === null ? true : recNum === recDeseadas;
+        const okPago = cumpleMetodoPago(casa, estadoAplicado.pago);
+
+        return okTexto && okPrecio && okRecamaras && okPago;
+      });
+
+      if (estadoAplicado.orden === "menor-mayor") {
+        filtradas.sort(([, a], [, b]) => extraerPrecioNumerico(a.precio) - extraerPrecioNumerico(b.precio));
+      } else if (estadoAplicado.orden === "mayor-menor") {
+        filtradas.sort(([, a], [, b]) => extraerPrecioNumerico(b.precio) - extraerPrecioNumerico(a.precio));
+      }
+
+      return filtradas;
+    }
+
     function renderizarCatalogo() {
       const grid = document.getElementById("grid-catalogo");
-      grid.innerHTML = "";
-      const favoritos = obtenerFavoritos();
+      const vacioBox = document.getElementById("mensaje-vacio");
+      const contador = document.getElementById("contador-propiedades");
 
-      Object.entries(INVENTARIO_CASAS).forEach(([id, casa]) => {
+      grid.innerHTML = "";
+      vacioBox.innerHTML = "";
+
+      const favoritos = obtenerFavoritos();
+      const propiedades = obtenerPropiedadesFiltradasYOrdenadas();
+
+      contador.textContent = `Mostrando ${propiedades.length} ${propiedades.length === 1 ? "propiedad" : "propiedades"}`;
+
+      if (propiedades.length === 0) {
+        vacioBox.innerHTML = `
+          <div class="sin-resultados">
+            <h3>No se encontraron propiedades con esos filtros</h3>
+            <p>Intenta cambiar el texto, el rango de precio o haz clic en <strong>Borrar todos los filtros</strong>.</p>
+          </div>
+        `;
+        return;
+      }
+
+      propiedades.forEach(([id, casa]) => {
         const fotoPortada = (casa.galeria && casa.galeria[0])
           ? casa.galeria[0].src
           : "imagenes/presentacion.jpeg";
@@ -783,6 +1160,7 @@
       });
     }
 
+    actualizarBotonesEstado();
     renderizarCatalogo();
 
     function alternarMenuPerfil(event) {
