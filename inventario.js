@@ -23,7 +23,6 @@ const INVENTARIO_CASAS = {
       "Crédito Infonavit",
       "Crédito Fovissste",
       "Crédito Hipotecario Bancario",
-      "Cofinavit / Apoyo Infonavit",
       "Compra de Contado"
     ],
     galeria: [
