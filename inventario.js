@@ -62,7 +62,7 @@ const INVENTARIO_CASAS = {
       { src: "imagenes/Arboleda1.FOTO2.jpeg", texto: "Interior" },
       { src: "imagenes/Arboleda1.FOTO3.jpeg", texto: "Interior" },
       { src: "imagenes/Arboleda1.FOTO4.jpeg", texto: "Interior" },
-      { src: "imagenes/Arboleda1.FOTO5.jpeg", texto: "Interior" }.
+      { src: "imagenes/Arboleda1.FOTO5.jpeg", texto: "Interior" },
       { src: "imagenes/Arboleda1.FOTO6.jpeg", texto: "Exterior" }
     ]
   }
