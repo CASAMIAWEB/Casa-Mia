@@ -35,61 +35,23 @@ const INVENTARIO_CASAS = {
   },
 
   "valle-verde": {
-    nombre: "Fraccionamiento Valle Verde",
-    estadoEtiqueta: "Privada con Vigilancia",
-    ubicacion: "Fracc. Valle Verde, Zona Sur",
-    precio: "$1,320,000 MXN",
-    subprecio: "Excelente opción para primer crédito",
-    recamaras: "2 Recámaras",
-    banos: "1.5 Baños",
-    medidas: "128 m² terreno · 92 m² construcción",
-    cochera: "1 auto",
-    descripcion: "Casa ubicada en zona tranquila con acceso controlado, ideal para parejas o familias pequeñas que buscan seguridad y cercanía a escuelas y tiendas.",
-    extras: [
-      "Piso cerámico en toda la vivienda",
-      "Medio baño en planta baja para visitas",
-      "Área verde y parque vecinal cercano",
-      "Documentación lista para trámite"
-    ],
-    creditos: [
-      "Crédito Infonavit",
-      "Crédito Fovissste",
-      "Compra de Contado"
-    ],
-    galeria: [
-      { src: "imagenes/presentacion.jpeg", texto: "Principal" },
-      { src: "imagenes/fondo-casa.jpeg", texto: "Jardín" },
-      { src: "imagenes/presentacion.jpeg", texto: "Fachada" },
-      { src: "imagenes/fondo-casa.jpeg", texto: "Detalle" }
-    ]
+    
   },
 
   "quinta-olivos": {
-    nombre: "Quinta Los Olivos",
-    estadoEtiqueta: "Residencia Amplia",
-    ubicacion: "Col. Los Olivos, Zona Poniente",
-    precio: "$2,490,000 MXN",
-    subprecio: "Residencia amplia · Alta plusvalía",
-    recamaras: "4 Recámaras",
-    banos: "3 Baños",
-    medidas: "240 m² terreno · 210 m² construcción",
-    cochera: "3 autos",
-    descripcion: "Casa de gran amplitud con jardín, terraza y espacios generosos en todas sus áreas, pensada para familias grandes que buscan comodidad y privacidad.",
-    extras: [
-      "4 recámaras distribuidas en dos plantas",
-      "3 baños completos con acabados modernos",
-      "Jardín y zona de terraza para reuniones",
-      "Amplio frente con espacio para 3 vehículos"
-    ],
-    creditos: [
-      "Crédito Hipotecario Bancario",
-      "Compra de Contado"
-    ],
-    galeria: [
-      { src: "imagenes/presentacion.jpeg", texto: "Principal" },
-      { src: "imagenes/fondo-casa.jpeg", texto: "Jardín" },
-      { src: "imagenes/presentacion.jpeg", texto: "Fachada" },
-      { src: "imagenes/fondo-casa.jpeg", texto: "Detalle" }
-    ]
-  }
+    
+};
+ "valle-verde": {
+    
+  },
+
+  "quinta-olivos": {
+    
+};
+"valle-verde": {
+    
+  },
+
+  "quinta-olivos": {
+    
 };
