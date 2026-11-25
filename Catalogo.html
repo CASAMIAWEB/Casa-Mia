@@ -191,7 +191,7 @@
 
     /* Contenido del Catálogo */
     .contenedor {
-      max-width: 1160px;
+      max-width: 1380px;
       margin: 35px auto;
       padding: 0 20px;
     }
@@ -216,10 +216,11 @@
       font-size: 15px;
     }
 
+    /* 4 tarjetas por fila y nueva fila automática cada 4 */
     .grid-casas {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
     }
 
     .tarjeta-casa {
@@ -239,7 +240,7 @@
 
     .portada-casa {
       position: relative;
-      height: 210px;
+      height: 195px;
       background-color: #d8dee4;
     }
 
@@ -263,7 +264,7 @@
     }
 
     .info-casa {
-      padding: 20px;
+      padding: 18px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -271,14 +272,14 @@
     }
 
     .precio {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: bold;
       color: #1b7a3d;
       margin-bottom: 4px;
     }
 
     .titulo-casa {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: bold;
       color: #111111;
       margin-bottom: 6px;
@@ -293,7 +294,7 @@
     .resumen-ficha {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 14px;
     }
 
@@ -301,18 +302,18 @@
       background-color: #f0f5f2;
       color: #1b7a3d;
       border: 1px solid #cce0d3;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
-      padding: 4px 9px;
+      padding: 4px 8px;
       border-radius: 6px;
     }
 
     .pagos-resumen {
-      font-size: 13px;
+      font-size: 12px;
       color: #333333;
       border-top: 1px solid #e6e6e6;
       padding-top: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .pagos-resumen strong {
@@ -325,10 +326,10 @@
       background-color: #1b7a3d;
       color: #ffffff;
       text-decoration: none;
-      padding: 11px 14px;
+      padding: 10px 12px;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: 0.8px;
       transition: background-color 0.2s;
     }
@@ -448,6 +449,18 @@
       font-weight: bold;
       text-decoration: underline;
       margin-right: 12px;
+    }
+
+    @media (max-width: 1150px) {
+      .grid-casas {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid-casas {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
