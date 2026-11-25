@@ -33,25 +33,3 @@ const INVENTARIO_CASAS = {
       { src: "imagenes/Arboleda1.Vista.jpeg", texto: "Vista" }
     ]
   },
-
-  "valle-verde": {
-    
-  },
-
-  "quinta-olivos": {
-    
-};
- "valle-verde": {
-    
-  },
-
-  "quinta-olivos": {
-    
-};
-"valle-verde": {
-    
-  },
-
-  "quinta-olivos": {
-    
-};
