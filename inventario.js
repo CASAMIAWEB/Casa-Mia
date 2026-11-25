@@ -33,3 +33,4 @@ const INVENTARIO_CASAS = {
       { src: "imagenes/Arboleda1.Vista.jpeg", texto: "Vista" }
     ]
   },
+};
