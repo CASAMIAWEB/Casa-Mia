@@ -58,9 +58,12 @@ const INVENTARIO_CASAS = {
     ],
     galeria: [
       { src: "imagenes/Arboleda1.Frente.jpeg", texto: "Frente" },
-      { src: "imagenes/Arboleda1.Lateral.jpeg", texto: "Lateral" },
-      { src: "imagenes/Arboleda1.Acceso.jpeg", texto: "Acceso" },
-      { src: "imagenes/Arboleda1.Vista.jpeg", texto: "Vista" }
+      { src: "imagenes/Arboleda1.FOTO1.jpeg", texto: "Lateral" },
+      { src: "imagenes/Arboleda1.FOTO2.jpeg", texto: "Interior" },
+      { src: "imagenes/Arboleda1.FOTO3.jpeg", texto: "Interior" }
+      { src: "imagenes/Arboleda1.FOTO4.jpeg", texto: "Interior" }
+      { src: "imagenes/Arboleda1.FOTO5.jpeg", texto: "Interior" }
+      { src: "imagenes/Arboleda1.FOTO6.jpeg", texto: "Exterior" }
     ]
   }
 };
