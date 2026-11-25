@@ -27,10 +27,10 @@ const INVENTARIO_CASAS = {
       "Compra de Contado"
     ],
     galeria: [
-      { src: "imagenes/presentacion.jpeg", texto: "Fachada" },
-      { src: "imagenes/fondo-casa.jpeg", texto: "Exterior" },
-      { src: "imagenes/presentacion.jpeg", texto: "Planta Baja" },
-      { src: "imagenes/fondo-casa.jpeg", texto: "Planta Alta" }
+      { src: "imagenes/Arboleda1.Frente.jpeg", texto: "Frente" },
+      { src: "imagenes/Arboleda1.Lateral.jpeg", texto: "Lateral" },
+      { src: "imagenes/Arboleda1.Acceso.jpeg", texto: "Acceso" },
+      { src: "imagenes/Arboleda1.Vista.jpeg", texto: "Vista" }
     ]
   },
 
