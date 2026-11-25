@@ -505,17 +505,17 @@
       <a href="Vendecasa.html">Vende tu Casa</a>
     </nav>
 
-    <div class="perfil-contenedor" id="perfil-box">
+    <div class="perfil-contenedor" id="perfil-box" onclick="alternarMenuPerfil(event)">
       <img src="imagenes/perfil.png" alt="Perfil" class="icono-perfil" />
       <div class="tarjeta-perfil">
         <p><span class="etiqueta">Usuario</span>Prueba</p>
         <p style="margin-bottom:0;"><span class="etiqueta">Correo vinculado</span>ExampleCorreo@gmail.com</p>
       </div>
-      <div class="menu-opciones-perfil" id="menu-perfil">
+      <div class="menu-opciones-perfil" onclick="event.stopPropagation()">
         <a href="Cuenta.html">Mi cuenta</a>
         <a href="Config.html">Configuración</a>
         <a href="Favoritos.html">Favoritos</a>
-        <a href="#" class="opcion-cerrar" id="btn-abrir-cerrar">Cerrar sesión</a>
+        <a href="#" class="opcion-cerrar" onclick="abrirModalCerrar(event)">Cerrar sesión</a>
       </div>
     </div>
   </header>
@@ -526,6 +526,7 @@
       <p>Haz clic en <strong>VISUALIZAR</strong> en cualquier propiedad para ver todas sus fotos, medidas exactas, ubicación y créditos aceptados.</p>
     </div>
 
+    <!-- Contenedor llenado automáticamente desde inventario.js -->
     <div class="grid-casas" id="grid-catalogo"></div>
   </main>
 
@@ -534,8 +535,8 @@
       <h3>¿Estás seguro que quieres cerrar sesión?</h3>
       <p>Tendrás que volver a ingresar tu usuario y contraseña para entrar.</p>
       <div class="botones-modal">
-        <button type="button" class="btn-modal-si" id="btn-confirmar-cerrar">Sí</button>
-        <button type="button" class="btn-modal-volver" id="btn-cancelar-cerrar">Volver</button>
+        <button type="button" class="btn-modal-si" onclick="window.location.href='index.html'">Sí</button>
+        <button type="button" class="btn-modal-volver" onclick="cerrarModalCerrar()">Volver</button>
       </div>
     </div>
   </div>
@@ -553,22 +554,16 @@
 
     function obtenerFavoritos() {
       try {
-        const guardados = JSON.parse(localStorage.getItem(CLAVE_FAVORITOS));
-        return Array.isArray(guardados) ? guardados : [];
+        return JSON.parse(localStorage.getItem(CLAVE_FAVORITOS)) || [];
       } catch (e) {
         return [];
       }
     }
 
-    function guardarFavoritos(favoritos) {
-      localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(favoritos));
-    }
-
     function alternarFavorito(id, boton) {
       let favoritos = obtenerFavoritos();
-      const yaGuardado = favoritos.includes(id);
 
-      if (yaGuardado) {
+      if (favoritos.includes(id)) {
         favoritos = favoritos.filter((favId) => favId !== id);
         boton.classList.remove("guardado");
         boton.textContent = "♡";
@@ -580,133 +575,82 @@
         boton.title = "Quitar de favoritos";
       }
 
-      guardarFavoritos(favoritos);
+      localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(favoritos));
     }
 
     function renderizarCatalogo() {
       const grid = document.getElementById("grid-catalogo");
-      if (!grid || typeof INVENTARIO_CASAS === "undefined") return;
-
       grid.innerHTML = "";
       const favoritos = obtenerFavoritos();
 
       Object.entries(INVENTARIO_CASAS).forEach(([id, casa]) => {
-        const fotoPortada =
-          casa.galeria && casa.galeria[0] && casa.galeria[0].src
-            ? casa.galeria[0].src
-            : "imagenes/presentacion.jpeg";
+        const fotoPortada = (casa.galeria && casa.galeria[0])
+          ? casa.galeria[0].src
+          : "imagenes/presentacion.jpeg";
 
-        const creditosRapidos =
-          casa.creditos && casa.creditos.length > 0
-            ? casa.creditos.join(" · ")
-            : "Consultar opciones";
+        const creditosRapidos = (casa.creditos && casa.creditos.length > 0)
+          ? casa.creditos.join(" · ")
+          : "Consultar opciones";
 
         const esFavorito = favoritos.includes(id);
 
         const tarjeta = document.createElement("article");
         tarjeta.className = "tarjeta-casa";
 
-        const portada = document.createElement("div");
-        portada.className = "portada-casa";
+        tarjeta.innerHTML = `
+          <div class="portada-casa">
+            <span class="etiqueta-estado">${casa.estadoEtiqueta || "Disponible"}</span>
+            <button type="button"
+                    class="btn-favorito ${esFavorito ? "guardado" : ""}"
+                    title="${esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}"
+                    onclick="alternarFavorito('${id}', this)">
+              ${esFavorito ? "♥" : "♡"}
+            </button>
+            <img src="${fotoPortada}" alt="${casa.nombre}" />
+          </div>
+          <div class="info-casa">
+            <div>
+              <div class="precio">${casa.precio}</div>
+              <div class="titulo-casa">${casa.nombre}</div>
+              <div class="ubicacion-corta">${casa.ubicacion}</div>
+              <div class="resumen-ficha">
+                <span class="pill-dato">${casa.recamaras}</span>
+                <span class="pill-dato">${casa.banos}</span>
+                <span class="pill-dato">${casa.medidas}</span>
+                <span class="pill-dato">${casa.cochera}</span>
+              </div>
+              <div class="pagos-resumen">
+                <strong>Créditos / Pagos:</strong> ${creditosRapidos}
+              </div>
+            </div>
+            <a href="Propiedad.html?id=${encodeURIComponent(id)}" class="btn-visualizar">VISUALIZAR</a>
+          </div>
+        `;
 
-        const etiqueta = document.createElement("span");
-        etiqueta.className = "etiqueta-estado";
-        etiqueta.textContent = casa.estadoEtiqueta || "Disponible";
-
-        const btnFav = document.createElement("button");
-        btnFav.type = "button";
-        btnFav.className = `btn-favorito ${esFavorito ? "guardado" : ""}`;
-        btnFav.textContent = esFavorito ? "♥" : "♡";
-        btnFav.title = esFavorito ? "Quitar de favoritos" : "Agregar a favoritos";
-        btnFav.addEventListener("click", (e) => {
-          e.stopPropagation();
-          alternarFavorito(id, btnFav);
-        });
-
-        const img = document.createElement("img");
-        img.src = fotoPortada;
-        img.alt = casa.nombre || "Propiedad";
-
-        portada.append(etiqueta, btnFav, img);
-
-        const info = document.createElement("div");
-        info.className = "info-casa";
-
-        const topInfo = document.createElement("div");
-
-        const precio = document.createElement("div");
-        precio.className = "precio";
-        precio.textContent = casa.precio || "";
-
-        const titulo = document.createElement("div");
-        titulo.className = "titulo-casa";
-        titulo.textContent = casa.nombre || "";
-
-        const ubicacion = document.createElement("div");
-        ubicacion.className = "ubicacion-corta";
-        ubicacion.textContent = casa.ubicacion || "";
-
-        const ficha = document.createElement("div");
-        ficha.className = "resumen-ficha";
-        [casa.recamaras, casa.banos, casa.medidas, casa.cochera]
-          .filter(Boolean)
-          .forEach((dato) => {
-            const pill = document.createElement("span");
-            pill.className = "pill-dato";
-            pill.textContent = dato;
-            ficha.appendChild(pill);
-          });
-
-        const pagos = document.createElement("div");
-        pagos.className = "pagos-resumen";
-        const strongPagos = document.createElement("strong");
-        strongPagos.textContent = "Créditos / Pagos:";
-        pagos.append(strongPagos, ` ${creditosRapidos}`);
-
-        topInfo.append(precio, titulo, ubicacion, ficha, pagos);
-
-        const linkVer = document.createElement("a");
-        linkVer.href = `Propiedad.html?id=${encodeURIComponent(id)}`;
-        linkVer.className = "btn-visualizar";
-        linkVer.textContent = "VISUALIZAR";
-
-        info.append(topInfo, linkVer);
-        tarjeta.append(portada, info);
         grid.appendChild(tarjeta);
       });
     }
 
-    const perfilBox = document.getElementById("perfil-box");
-    const menuPerfil = document.getElementById("menu-perfil");
-    const modalCerrar = document.getElementById("modal-cerrar-sesion");
-
-    perfilBox.addEventListener("click", () => {
-      perfilBox.classList.toggle("menu-abierto");
-    });
-
-    menuPerfil.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-
-    document.addEventListener("click", () => {
-      perfilBox.classList.remove("menu-abierto");
-    });
-
-    document.getElementById("btn-abrir-cerrar").addEventListener("click", (e) => {
-      e.preventDefault();
-      perfilBox.classList.remove("menu-abierto");
-      modalCerrar.classList.add("activo");
-    });
-
-    document.getElementById("btn-cancelar-cerrar").addEventListener("click", () => {
-      modalCerrar.classList.remove("activo");
-    });
-
-    document.getElementById("btn-confirmar-cerrar").addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
-
     renderizarCatalogo();
+
+    function alternarMenuPerfil(event) {
+      event.stopPropagation();
+      document.getElementById("perfil-box").classList.toggle("menu-abierto");
+    }
+
+    document.addEventListener("click", function () {
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+    });
+
+    function abrirModalCerrar(event) {
+      event.preventDefault();
+      document.getElementById("perfil-box").classList.remove("menu-abierto");
+      document.getElementById("modal-cerrar-sesion").classList.add("activo");
+    }
+
+    function cerrarModalCerrar() {
+      document.getElementById("modal-cerrar-sesion").classList.remove("activo");
+    }
   </script>
 </body>
 </html>
