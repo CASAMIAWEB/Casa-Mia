@@ -185,6 +185,10 @@
       border-bottom: none;
     }
 
+    .menu-opciones-perfil a.opcion-cerrar:hover {
+      background-color: #fdecea;
+    }
+
     /* Contenedor principal */
     .contenedor {
       max-width: 1380px;
@@ -231,11 +235,16 @@
       box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
       display: flex;
       flex-direction: column;
-      transition: transform 0.25s ease;
+      transition: transform 0.25s ease, opacity 0.35s ease;
     }
 
     .tarjeta-casa:hover {
       transform: translateY(-4px);
+    }
+
+    .tarjeta-casa.eliminando {
+      opacity: 0;
+      transform: scale(0.95);
     }
 
     .portada-casa {
@@ -263,29 +272,96 @@
       border-radius: 6px;
     }
 
+    /* Botón de corazón con animación al partirse */
     .btn-favorito {
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       border: none;
-      background-color: rgba(255, 255, 255, 0.95);
-      color: #e63946;
-      font-size: 19px;
-      line-height: 1;
+      background-color: rgba(255, 255, 255, 0.94);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-      transition: transform 0.2s;
+      transition: transform 0.2s, background-color 0.2s;
       z-index: 5;
+      overflow: visible;
     }
 
     .btn-favorito:hover {
-      transform: scale(1.1);
+      transform: scale(1.08);
+      background-color: #ffffff;
+    }
+
+    .corazon-svg {
+      width: 20px;
+      height: 20px;
+      overflow: visible;
+      display: block;
+    }
+
+    .corazon-base {
+      fill: #e63946;
+      stroke: #e63946;
+      stroke-width: 1.8;
+      transition: fill 0.2s ease, stroke 0.2s ease, opacity 0.12s ease;
+    }
+
+    .btn-favorito.partiendo .corazon-base {
+      opacity: 0;
+      fill: #ffffff;
+      stroke: #555555;
+    }
+
+    .mitad-corazon {
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 6;
+    }
+
+    .mitad-corazon svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    @keyframes caerIzq {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-7px, 14px) rotate(-26deg);
+      }
+    }
+
+    @keyframes caerDer {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(7px, 14px) rotate(26deg);
+      }
+    }
+
+    .btn-favorito.partiendo .mitad-izq {
+      animation: caerIzq 0.42s ease-in forwards;
+    }
+
+    .btn-favorito.partiendo .mitad-der {
+      animation: caerDer 0.42s ease-in forwards;
     }
 
     .info-casa {
@@ -341,6 +417,10 @@
       margin-bottom: 14px;
     }
 
+    .pagos-resumen strong {
+      color: #111111;
+    }
+
     .btn-visualizar {
       display: block;
       text-align: center;
@@ -390,6 +470,7 @@
       padding: 12px 24px;
       border-radius: 8px;
       font-size: 14px;
+      transition: background-color 0.2s;
     }
 
     .btn-ir-catalogo:hover {
@@ -422,11 +503,24 @@
       border-radius: 14px;
       text-align: center;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      animation: aparecerModal 0.25s ease-out;
+    }
+
+    @keyframes aparecerModal {
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .modal-cerrar h3 {
       font-size: 20px;
       margin-bottom: 10px;
+      color: #111111;
     }
 
     .modal-cerrar p {
@@ -529,7 +623,7 @@
       <div class="menu-opciones-perfil" onclick="event.stopPropagation()">
         <a href="Cuenta.html">Mi cuenta</a>
         <a href="Config.html">Configuración</a>
-        <a href="Favoritos.html">Favoritos</a>
+        <a href="Favoritos.html" class="activo">Favoritos</a>
         <a href="#" class="opcion-cerrar" onclick="abrirModalCerrar(event)">Cerrar sesión</a>
       </div>
     </div>
@@ -578,10 +672,55 @@
       }
     }
 
-    function quitarFavorito(id) {
+    function crearBotonQuitarFavorito(id) {
+      return `
+        <button type="button"
+                class="btn-favorito"
+                title="Quitar de favoritos"
+                onclick="quitarFavorito('${id}', this)">
+          <svg class="corazon-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path class="corazon-base" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span class="mitad-corazon mitad-izq" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <clipPath id="fav-clip-izq-${id}">
+                  <rect x="0" y="0" width="12" height="24" />
+                </clipPath>
+              </defs>
+              <path clip-path="url(#fav-clip-izq-${id})" fill="#e63946" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </span>
+          <span class="mitad-corazon mitad-der" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <clipPath id="fav-clip-der-${id}">
+                  <rect x="12" y="0" width="12" height="24" />
+                </clipPath>
+              </defs>
+              <path clip-path="url(#fav-clip-der-${id})" fill="#e63946" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </span>
+        </button>
+      `;
+    }
+
+    function quitarFavorito(id, boton) {
+      if (boton.dataset.animando === "1") return;
+      boton.dataset.animando = "1";
+
+      boton.classList.add("partiendo");
+      const tarjeta = boton.closest(".tarjeta-casa");
+      if (tarjeta) {
+        tarjeta.classList.add("eliminando");
+      }
+
       const nuevos = obtenerFavoritos().filter((favId) => favId !== id);
       localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(nuevos));
-      renderizarFavoritos();
+
+      setTimeout(() => {
+        renderizarFavoritos();
+      }, 420);
     }
 
     function renderizarFavoritos() {
@@ -590,14 +729,13 @@
       grid.innerHTML = "";
       vacioBox.innerHTML = "";
 
-      // Filtrar solo los IDs que existan actualmente en INVENTARIO_CASAS
       const idsValidos = obtenerFavoritos().filter((id) => INVENTARIO_CASAS[id]);
 
       if (idsValidos.length === 0) {
         vacioBox.innerHTML = `
           <div class="estado-vacio">
             <h2>Aún no tienes propiedades en favoritos</h2>
-            <p>Entra al catálogo y presiona el ícono de corazón (♡) en las casas que te interesen para guardarlas aquí.</p>
+            <p>Entra al catálogo y presiona el ícono de corazón en las casas que te interesen para guardarlas aquí.</p>
             <a href="Catalogo.html" class="btn-ir-catalogo">Ir al Catálogo</a>
           </div>
         `;
@@ -620,12 +758,7 @@
         tarjeta.innerHTML = `
           <div class="portada-casa">
             <span class="etiqueta-estado">${casa.estadoEtiqueta || "Disponible"}</span>
-            <button type="button"
-                    class="btn-favorito"
-                    title="Quitar de favoritos"
-                    onclick="quitarFavorito('${id}')">
-              ♥
-            </button>
+            ${crearBotonQuitarFavorito(id)}
             <img src="${fotoPortada}" alt="${casa.nombre}" />
           </div>
           <div class="info-casa">
