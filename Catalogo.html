@@ -5,6 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Casa Mia | Catálogo de Casas</title>
   <style>
+
+    .btn-favorito {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background-color: rgba(255, 255, 255, 0.92);
+      color: #666666;
+      font-size: 19px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s, color 0.2s, background-color 0.2s;
+      z-index: 5;
+    }
+
+    .btn-favorito:hover {
+      transform: scale(1.1);
+      background-color: #ffffff;
+    }
+
+    .btn-favorito.guardado {
+      color: #e63946;
+    }
+    
     * {
       box-sizing: border-box;
       margin: 0;
@@ -520,6 +551,91 @@
 
   <script src="inventario.js"></script>
   <script>
+
+    const CLAVE_FAVORITOS = "casamia_favoritos";
+
+    function obtenerFavoritos() {
+      try {
+        return JSON.parse(localStorage.getItem(CLAVE_FAVORITOS)) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function alternarFavorito(id, boton) {
+      let favoritos = obtenerFavoritos();
+
+      if (favoritos.includes(id)) {
+        favoritos = favoritos.filter((favId) => favId !== id);
+        boton.classList.remove("guardado");
+        boton.textContent = "♡";
+        boton.title = "Agregar a favoritos";
+      } else {
+        favoritos.push(id);
+        boton.classList.add("guardado");
+        boton.textContent = "♥";
+        boton.title = "Quitar de favoritos";
+      }
+
+      localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(favoritos));
+    }
+
+    function renderizarCatalogo() {
+      const grid = document.getElementById("grid-catalogo");
+      grid.innerHTML = "";
+      const favoritos = obtenerFavoritos();
+
+      Object.entries(INVENTARIO_CASAS).forEach(([id, casa]) => {
+        const fotoPortada = (casa.galeria && casa.galeria[0])
+          ? casa.galeria[0].src
+          : "imagenes/presentacion.jpeg";
+
+        const creditosRapidos = (casa.creditos && casa.creditos.length > 0)
+          ? casa.creditos.join(" · ")
+          : "Consultar opciones";
+
+        const esFavorito = favoritos.includes(id);
+
+        const tarjeta = document.createElement("article");
+        tarjeta.className = "tarjeta-casa";
+
+        tarjeta.innerHTML = `
+          <div class="portada-casa">
+            <span class="etiqueta-estado">${casa.estadoEtiqueta || "Disponible"}</span>
+            <button type="button"
+                    class="btn-favorito ${esFavorito ? "guardado" : ""}"
+                    title="${esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}"
+                    onclick="alternarFavorito('${id}', this)">
+              ${esFavorito ? "♥" : "♡"}
+            </button>
+            <img src="${fotoPortada}" alt="${casa.nombre}" />
+          </div>
+          <div class="info-casa">
+            <div>
+              <div class="precio">${casa.precio}</div>
+              <div class="titulo-casa">${casa.nombre}</div>
+              <div class="ubicacion-corta">${casa.ubicacion}</div>
+              <div class="resumen-ficha">
+                <span class="pill-dato">${casa.recamaras}</span>
+                <span class="pill-dato">${casa.banos}</span>
+                <span class="pill-dato">${casa.medidas}</span>
+                <span class="pill-dato">${casa.cochera}</span>
+              </div>
+              <div class="pagos-resumen">
+                <strong>Créditos / Pagos:</strong> ${creditosRapidos}
+              </div>
+            </div>
+            <a href="Propiedad.html?id=${encodeURIComponent(id)}" class="btn-visualizar">VISUALIZAR</a>
+          </div>
+        `;
+
+        grid.appendChild(tarjeta);
+      });
+    }
+
+    renderizarCatalogo();
+
+    
     function renderizarCatalogo() {
       const grid = document.getElementById("grid-catalogo");
       grid.innerHTML = "";
