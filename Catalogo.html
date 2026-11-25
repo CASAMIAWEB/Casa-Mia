@@ -267,30 +267,132 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       border: none;
-      background-color: rgba(255, 255, 255, 0.92);
-      color: #666666;
-      font-size: 19px;
-      line-height: 1;
+      background-color: rgba(255, 255, 255, 0.94);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-      transition: transform 0.2s, color 0.2s, background-color 0.2s;
+      transition: transform 0.2s, background-color 0.2s;
       z-index: 5;
+      overflow: visible;
     }
 
     .btn-favorito:hover {
-      transform: scale(1.1);
+      transform: scale(1.08);
       background-color: #ffffff;
     }
 
-    .btn-favorito.guardado {
-      color: #e63946;
+    .corazon-svg {
+      width: 20px;
+      height: 20px;
+      overflow: visible;
+      display: block;
+    }
+
+    .corazon-base {
+      fill: #ffffff;
+      stroke: #555555;
+      stroke-width: 1.8;
+      transform-origin: center;
+      transition: fill 0.2s ease, stroke 0.2s ease, opacity 0.12s ease;
+    }
+
+    .btn-favorito.guardado .corazon-base {
+      fill: #e63946;
+      stroke: #e63946;
+    }
+
+    .btn-favorito.partiendo .corazon-base {
+      opacity: 0;
+    }
+
+    @keyframes popCorazon {
+      0% { transform: scale(0.75); }
+      55% { transform: scale(1.24); }
+      100% { transform: scale(1); }
+    }
+
+    .btn-favorito.anim-like .corazon-base {
+      animation: popCorazon 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .chispa {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: #e63946;
+      top: 50%;
+      left: 50%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes chispaVuelo {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2);
+      }
+    }
+
+    .btn-favorito.anim-like .chispa {
+      animation: chispaVuelo 0.45s ease-out forwards;
+    }
+
+    .mitad-corazon {
+      position: absolute;
+      top: 9px;
+      left: 9px;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 6;
+    }
+
+    .mitad-corazon svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    @keyframes caerIzq {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-7px, 14px) rotate(-26deg);
+      }
+    }
+
+    @keyframes caerDer {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(7px, 14px) rotate(26deg);
+      }
+    }
+
+    .btn-favorito.partiendo .mitad-izq {
+      animation: caerIzq 0.42s ease-in forwards;
+    }
+
+    .btn-favorito.partiendo .mitad-der {
+      animation: caerDer 0.42s ease-in forwards;
     }
 
     .info-casa {
@@ -526,7 +628,6 @@
       <p>Haz clic en <strong>VISUALIZAR</strong> en cualquier propiedad para ver todas sus fotos, medidas exactas, ubicación y créditos aceptados.</p>
     </div>
 
-    <!-- Contenedor llenado automáticamente desde inventario.js -->
     <div class="grid-casas" id="grid-catalogo"></div>
   </main>
 
@@ -560,19 +661,75 @@
       }
     }
 
+    function crearHtmlBotonFavorito(id, esFavorito) {
+      const chispas = [
+        "--dx: -14px; --dy: -10px;",
+        "--dx: 14px; --dy: -10px;",
+        "--dx: -16px; --dy: 2px;",
+        "--dx: 16px; --dy: 2px;",
+        "--dx: -8px; --dy: -15px;",
+        "--dx: 9px; --dy: -15px;"
+      ]
+        .map((estilo) => `<span class="chispa" style="${estilo}"></span>`)
+        .join("");
+
+      return `
+        <button type="button"
+                class="btn-favorito ${esFavorito ? "guardado" : ""}"
+                title="${esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}"
+                onclick="alternarFavorito('${id}', this)">
+          ${chispas}
+          <svg class="corazon-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path class="corazon-base" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span class="mitad-corazon mitad-izq" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <clipPath id="clip-izq-${id}">
+                  <rect x="0" y="0" width="12" height="24" />
+                </clipPath>
+              </defs>
+              <path clip-path="url(#clip-izq-${id})" fill="#e63946" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </span>
+          <span class="mitad-corazon mitad-der" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <defs>
+                <clipPath id="clip-der-${id}">
+                  <rect x="12" y="0" width="12" height="24" />
+                </clipPath>
+              </defs>
+              <path clip-path="url(#clip-der-${id})" fill="#e63946" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+          </span>
+        </button>
+      `;
+    }
+
     function alternarFavorito(id, boton) {
       let favoritos = obtenerFavoritos();
+      const yaGuardado = favoritos.includes(id);
 
-      if (favoritos.includes(id)) {
+      boton.classList.remove("anim-like", "partiendo");
+      void boton.offsetWidth;
+
+      if (yaGuardado) {
         favoritos = favoritos.filter((favId) => favId !== id);
         boton.classList.remove("guardado");
-        boton.textContent = "♡";
+        boton.classList.add("partiendo");
         boton.title = "Agregar a favoritos";
+
+        setTimeout(() => {
+          boton.classList.remove("partiendo");
+        }, 430);
       } else {
         favoritos.push(id);
-        boton.classList.add("guardado");
-        boton.textContent = "♥";
+        boton.classList.add("guardado", "anim-like");
         boton.title = "Quitar de favoritos";
+
+        setTimeout(() => {
+          boton.classList.remove("anim-like");
+        }, 460);
       }
 
       localStorage.setItem(CLAVE_FAVORITOS, JSON.stringify(favoritos));
@@ -600,12 +757,7 @@
         tarjeta.innerHTML = `
           <div class="portada-casa">
             <span class="etiqueta-estado">${casa.estadoEtiqueta || "Disponible"}</span>
-            <button type="button"
-                    class="btn-favorito ${esFavorito ? "guardado" : ""}"
-                    title="${esFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}"
-                    onclick="alternarFavorito('${id}', this)">
-              ${esFavorito ? "♥" : "♡"}
-            </button>
+            ${crearHtmlBotonFavorito(id, esFavorito)}
             <img src="${fotoPortada}" alt="${casa.nombre}" />
           </div>
           <div class="info-casa">
